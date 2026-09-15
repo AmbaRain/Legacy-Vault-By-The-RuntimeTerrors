@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Sora", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-vault: var(--vault);
+  --color-vault-foreground: var(--vault-foreground);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+}
+
+:root {
+  /* Brand Guidelines: Neon Lime (#AAFF00), Deep Black (#0B0F14), Slate (#1E2329), Mist (#E8E8EA) */
+  --background: #0B0F14;
+  --foreground: #E8E8EA;
+  
+  --card: #1E2329;
+  --card-foreground: #E8E8EA;
+  
+  --popover: #1E2329;
+  --popover-foreground: #E8E8EA;
+  
+  --primary: #AAFF00;
+  --primary-foreground: #0B0F14;
+  
+  --secondary: #171B21;
+  --secondary-foreground: #E8E8EA;
+  
+  --muted: #151920;
+  --muted-foreground: #8E95A0;
+  
+  --accent: #AAFF00;
+  --accent-foreground: #0B0F14;
+  
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  
+  --success: #10B981;
+  --warning: #F59E0B;
+  
+  --border: #262C34;
+  --input: #262C34;
+  --ring: #AAFF00;
+
+  --vault: #151920;
+  --vault-foreground: #E8E8EA;
+
+  --sidebar: #0E1217;
+  --sidebar-foreground: #E8E8EA;
+  --sidebar-primary: #AAFF00;
+  --sidebar-primary-foreground: #0B0F14;
+  --sidebar-accent: #1E2329;
+  --sidebar-accent-foreground: #AAFF00;
+  --sidebar-border: #1E2329;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.vault-surface {
+  background-color: #171C23;
+  color: #E8E8EA;
+  border: 1px solid #262C34;
+}
+
+.vault-button-solid {
+  background-color: #AAFF00;
+  color: #0B0F14;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.vault-button-solid:hover {
+  background-color: #9CE600;
+  box-shadow: 0 0 15px rgba(170, 255, 0, 0.35);
+}
+
+.vault-button-outline {
+  border: 1px solid rgba(170, 255, 0, 0.4);
+  color: #AAFF00;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+
+.vault-button-outline:hover {
+  background-color: rgba(170, 255, 0, 0.1);
+  border-color: #AAFF00;
+}

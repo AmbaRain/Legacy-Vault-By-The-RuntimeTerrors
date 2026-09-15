@@ -1,0 +1,8 @@
+{
+  "name": "Legacy Vault",
+  "description": "A Starknet wallet for programmable crypto inheritance. Manage assets and protect your digital legacy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
