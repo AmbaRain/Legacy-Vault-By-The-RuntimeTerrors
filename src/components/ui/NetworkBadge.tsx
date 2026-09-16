@@ -16,8 +16,8 @@ export const NetworkBadge: React.FC<NetworkBadgeProps> = ({
 
   const networkColors: Record<string, string> = {
     'Starknet Mainnet': 'bg-primary/20 text-primary border border-primary',
-    'Starknet Sepolia': 'bg-amber-20/20 text-amber-600 border border-amber-500/40',
-    'Ethereum': 'bg-indigo-20/20 text-indigo-600 border border-indigo-500/40',
+    'Starknet Sepolia': 'bg-amber-200/20 text-amber-600 border border-amber-500/40',
+    'Ethereum': 'bg-indigo-50/20 text-indigo-600 border border-indigo-500/40',
   };
 
   const colorClass = networkColors[network] ?? 'bg-muted text-muted-foreground border border-border/50';

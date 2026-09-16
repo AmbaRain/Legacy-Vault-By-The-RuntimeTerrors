@@ -4,6 +4,65 @@
  * Global prefers-reduced-motion support included.
  */
 
+@import "tailwindcss";
+
+/* -- Tailwind v4 Theme -- */
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-vault: var(--vault);
+  --color-vault-foreground: var(--vault-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-lg: var(--text-lg);
+  --text-xl: var(--text-xl);
+  --text-2xl: var(--text-2xl);
+  --text-3xl: var(--text-3xl);
+
+  --font-normal: var(--font-normal);
+  --font-medium: var(--font-medium);
+  --font-semibold: var(--font-semibold);
+  --font-bold: var(--font-bold);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-full: var(--radius-full);
+}
+
 /* -- Visual Tokens -- */
 
 /* Color Palette (Preserved from existing source) */
@@ -266,10 +325,10 @@ body {
     @apply bg-primary/20 text-primary border border-primary;
   }
   .network-badge-sepolia {
-    @apply bg-amber-20/20 text-amber-600 border border-amber-500/40;
+    @apply bg-amber-200/20 text-amber-600 border border-amber-500/40;
   }
   .network-badge-ethereum {
-    @apply bg-indigo-20/20 text-indigo-600 border border-indigo-500/40;
+    @apply bg-indigo-200/20 text-indigo-600 border border-indigo-500/40;
   }
   
   /* TransactionState */
@@ -320,3 +379,4 @@ input, select, textarea {
          hover:bg-primary/10 hover:text-primary focus-visible:ring-2 
          focus-visible:ring-primary focus-visible:ring-offset-2;
 }
+
