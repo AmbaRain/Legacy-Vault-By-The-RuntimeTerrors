@@ -3,12 +3,20 @@ import React, { ButtonHTMLAttributes, forwardRef } from 'react';
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive' | 'vault';
   size?: 'sm' | 'md' | 'lg' | 'icon';
+  loading?: boolean;
+  asChild?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className = '', variant = 'default', size = 'md', children, disabled, ...props }, ref) => {
+  ({ className = '', variant = 'default', size = 'md', children, disabled, loading, ...props }, ref) => {
     const base =
-      'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
+      'inline-flex items-center justify-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
+
+    const focusVisible = 'focus-visible:ring-offset-2';
+
+    const loadingIcon = loading ? (
+      <span className="animate-spin h-4 w-4 mr-2 shrink-0" />
+    ) : null;
 
     const variants = {
       default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90 rounded-lg',
@@ -35,7 +43,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={`${base} ${variants[variant]} ${sizes[size]} ${className}`}
         {...props}
       >
-        {children}
+        {loading ? (
+          <span className="flex items-center justify-center">
+            {loadingIcon}
+            {children}
+          </span>
+        ) : (
+          children
+        )}
       </button>
     );
   }
