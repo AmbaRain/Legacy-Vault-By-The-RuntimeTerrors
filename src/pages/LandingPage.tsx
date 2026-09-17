@@ -17,6 +17,7 @@ import { PublicNavbar } from '../components/layout/PublicNavbar';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { LegacyVaultLogo, LegacyVaultIcon } from '../components/ui/LegacyVaultLogo';
+import { HeroBackground } from '../components/ui/HeroBackground';
 
 export const LandingPage: React.FC = () => {
   const features = [
@@ -74,85 +75,35 @@ export const LandingPage: React.FC = () => {
     <div className="min-h-screen bg-background text-foreground">
       <PublicNavbar />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden py-16 sm:py-24">
-        <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-            className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-[#1E2329] border border-[#2A3038] shadow-2xl shadow-[#AAFF00]/10"
-          >
-            <motion.div
-              animate={{ y: [0, -4, 0] }}
-              transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
-            >
-              <LegacyVaultIcon size={56} />
-            </motion.div>
-          </motion.div>
+      <HeroBackground />
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="mt-6"
-          >
-            <span className="text-xs font-bold tracking-[0.25em] text-[#8E95A0] uppercase">
-              More Than A Wallet
-            </span>
-          </motion.div>
+      <div className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 sm:pt-20">
+        <span className="text-xs font-bold tracking-[0.25em] text-[#8E95A0] uppercase">
+          More Than A Wallet
+        </span>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
-            className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-6xl text-foreground"
-          >
-            A secure home <br className="hidden sm:block" />
-            for <span className="text-[#AAFF00]">your future.</span>
-          </motion.h1>
+        <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-6xl text-foreground">
+          A secure home <br className="hidden sm:block" />
+          <span className="text-[#AAFF00]">your future.</span>
+        </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.25, ease: 'easeOut' }}
-            className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg"
-          >
-            Legacy Vault is a crypto platform built for people who think long term. Store, manage and grow your
-            digital assets with security, simplicity and control — because your wealth deserves a legacy.
-          </motion.p>
+        <p className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg">
+          Legacy Vault is a crypto platform built for people who think long term. Store, manage and grow your
+          digital assets with security, simplicity and control — because your wealth deserves a legacy.
+        </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.35, ease: 'easeOut' }}
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-          >
-            <Button asChild size="lg" className="vault-button-solid w-full sm:w-auto text-base">
-              <Link to="/auth?mode=signup">
-                Create a Vault
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base border-border bg-card">
-              <Link to="/how-it-works">How It Works</Link>
-            </Button>
-          </motion.div>
-
-          {/* Starknet Trust Banner */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-            className="mt-12 inline-flex items-center gap-2 rounded-full border border-border bg-[#1E2329] px-4 py-2 text-xs font-semibold text-[#8E95A0]"
-          >
-            <span className="h-2 w-2 rounded-full bg-[#AAFF00] animate-pulse" />
-            <span>YOUR CRYPTO. YOUR LEGACY.</span>
-            <span className="text-border">•</span>
-            <span>Protected by Starknet</span>
-          </motion.div>
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button asChild size="lg" className="vault-button-solid w-full sm:w-auto text-base">
+            <Link to="/auth?mode=signup">
+              Create a Vault
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="lg" className="w-full sm:w-auto text-base border-border bg-card">
+            <Link to="/how-it-works">How It Works</Link>
+          </Button>
         </div>
-      </section>
+      </div>
 
       {/* Hero Feature Box Preview */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">

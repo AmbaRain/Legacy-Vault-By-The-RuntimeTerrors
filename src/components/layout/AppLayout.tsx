@@ -14,7 +14,6 @@ import {
   Menu,
   X,
   Shuffle,
-  CircleDot,
 } from 'lucide-react';
 import { useVault } from '../../context/VaultContext';
 import { AddressDisplay } from '../ui/AddressDisplay';
@@ -66,7 +65,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <aside className="hidden w-64 shrink-0 flex-col justify-between border-r border-sidebar-border bg-sidebar p-4 text-sidebar-foreground md:flex">
+      <aside className="hidden w-64 shrink-0 flex-col justify-between border-b border-border bg-sidebar p-4 text-sidebar-foreground md:flex">
         <div className="space-y-6">
           <Link to="/dashboard" className="flex items-center px-2 py-1">
             <LegacyVaultLogo variant="horizontal" size="md" showTagline={true} />
@@ -95,29 +94,29 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
         </div>
 
         {/* Bottom account status */}
-        <div className="space-y-3 rounded-xl border border-sidebar-border/60 bg-sidebar-accent/40 p-3 text-xs">
+        <div className="space-y-3 p-3 text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] text-muted-foreground">Network</span>
-            <span className="inline-flex items-center gap-1.5 font-medium text-emerald-400 text-[11px]">
+            <span className="font-medium text-muted-foreground">Network</span>
+            <span className="inline-flex items-center gap-1.5 font-medium text-emerald-400">
               <CircleDot className="h-2 w-2 animate-pulse" />
               Starknet Mainnet
             </span>
           </div>
 
           <div>
-            <span className="text-[11px] text-muted-foreground">Wallet</span>
-            <div className="mt-0.5">
+            <span className="font-medium text-muted-foreground">Wallet</span>
+            <div className="mt-1">
               <AddressDisplay
                 value={vault?.profile?.wallet_address}
                 variant="short"
-                className="text-sidebar-foreground text-xs"
+                className="text-sidebar-foreground"
               />
             </div>
           </div>
 
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-sidebar-border bg-sidebar/50 py-1.5 text-xs text-sidebar-foreground/80 transition-colors hover:bg-destructive/20 hover:text-destructive cursor-pointer"
+            className="w-full items-center justify-center gap-2 rounded-md border bg-sidebar/50 py-1.5 text-xs text-sidebar-foreground/80 transition-colors hover:bg-destructive/20 hover:text-destructive cursor-pointer"
           >
             <LogOut className="h-3.5 w-3.5" />
             Sign Out
@@ -127,17 +126,27 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
 
       {/* Mobile Drawer & Top bar */}
       <div className="flex flex-1 flex-col overflow-x-hidden">
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur md:hidden">
+        <header className="sticky top-0 z-30 flex h-12 items-center justify-between border-b border-border/20 bg-background/90 px-4 backdrop-blur md:hidden">
           <Link to="/dashboard" className="flex items-center">
             <LegacyVaultLogo variant="horizontal" size="sm" />
           </Link>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-1.5 text-foreground"
+            className="p-2 rounded-md flex items-center justify-center"
             aria-label="Toggle Menu"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileMenuOpen ? (
+              <X
+                className="h-5 w-5 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                aria-label="Close Menu"
+              />
+            ) : (
+              <Menu
+                className="h-5 w-5 text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                aria-label="Open Menu"
+              />
+            )}
           </button>
         </header>
 
@@ -164,9 +173,9 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
               })}
             </nav>
 
-            <div className="mt-8 border-t border-border pt-6">
+            <div className="mt-8 pt-6">
               <div className="mb-4">
-                <span className="text-xs text-muted-foreground">Connected Address:</span>
+                <span className="text-xs font-medium text-muted-foreground">Connected Address:</span>
                 <div className="mt-1 font-mono text-sm">
                   <AddressDisplay value={vault?.profile?.wallet_address} variant="short" />
                 </div>
@@ -177,7 +186,7 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
                   setMobileMenuOpen(false);
                   handleSignOut();
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-destructive/10 py-2.5 text-sm font-medium text-destructive"
+                className="flex w-full items-center justify-center rounded-md bg-destructive/10 py-2.5 text-sm font-medium text-destructive"
               >
                 <LogOut className="h-4 w-4" />
                 Sign Out
@@ -202,48 +211,48 @@ export const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children })
         </main>
 
         {/* Mobile Bottom Navigation Bar */}
-        <div className="fixed bottom-0 left-0 right-0 z-20 flex h-16 items-center justify-around border-t border-border bg-card/90 px-2 backdrop-blur-md md:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-20 flex h-16 items-center justify-around border-0 bg-card/90 px-2 backdrop-blur-md md:hidden">
           <Link
             to="/dashboard"
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
+            className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
               isActive('/dashboard') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
           >
             <LayoutDashboard className="h-5 w-5" />
             Home
           </Link>
           <Link
             to="/assets"
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
+            className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
               isActive('/assets') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
           >
             <Coins className="h-5 w-5" />
             Assets
           </Link>
           <Link
             to="/send"
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
+            className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
               isActive('/send') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
           >
             <ArrowUpRight className="h-5 w-5" />
             Send
           </Link>
           <Link
             to="/legacy-protection"
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
+            className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
               isActive('/legacy-protection') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
           >
             <Shield className="h-5 w-5" />
             Legacy
           </Link>
           <Link
             to="/activity"
-            className={`flex flex-col items-center gap-1 text-[11px] font-medium ${
+            className={`flex flex-col items-center gap-1 text-[11px] font-medium transition-colors ${
               isActive('/activity') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            } focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary`}
           >
             <Clock className="h-5 w-5" />
             Activity

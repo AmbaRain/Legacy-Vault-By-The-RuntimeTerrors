@@ -25,7 +25,26 @@ import {
   formatDateTime,
   formatUsd,
   getAssetConfig,
+  daysSince,
 } from '../utils/format';
+
+const STATUS_COLORS: Record<string, string> = {
+  active: 'bg-primary/15 text-primary',
+  warning: 'bg-amber-500/20 text-amber-800 dark:text-amber-300',
+  eligible: 'bg-primary/15 text-primary',
+  executed: 'bg-primary/15 text-primary',
+  not_configured: 'bg-muted text-muted-foreground',
+  paused: 'bg-muted text-muted-foreground',
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  active: 'Active',
+  warning: 'Warning',
+  eligible: 'Eligible',
+  executed: 'Executed',
+  not_configured: 'Not configured',
+  paused: 'Paused',
+};
 
 export const DashboardPage: React.FC = () => {
   const { vault, totalBalanceUsd, legacyStatus } = useVault();
@@ -33,6 +52,45 @@ export const DashboardPage: React.FC = () => {
   const balances = vault?.balances ?? [];
   const transactions = vault?.transactions ?? [];
   const legacy = vault?.legacy;
+
+  const getLegacyDetails = () => {
+    if (!legacy || legacy.status === 'not_configured' || !legacy.dormancy_days) {
+      return null;
+    }
+    const days = daysSince(legacy.last_qualifying_activity ?? legacy.last_qualifying_activity ?? '');
+    const ratio = days / legacy.dormancy_days;
+    let status: string;
+    let secondsRemaining = 0;
+
+    if (legacy.status === 'paused') {
+      status = 'paused';
+    } else if (legacy.executed_at) {
+      status = 'executed';
+    } else if (ratio >= 1) {
+      status = 'eligible';
+      secondsRemaining = 0;
+    } else if (ratio >= 0.7) {
+      status = 'warning';
+      const daysRemaining = Math.ceil((1 - ratio) * legacy.dormancy_days);
+      secondsRemaining = daysRemaining * 86400;
+    } else {
+      status = 'active';
+      const daysRemaining = legacy.dormancy_days - days;
+      secondsRemaining = daysRemaining > 0 ? daysRemaining * 86400 : 0;
+    }
+
+    return {
+      status,
+      secondsRemaining,
+      days: legacy.dormancy_days,
+      next_of_kin: legacy.next_of_kin,
+      gas_reserve: legacy.gas_reserve,
+      gas_reserve_asset: legacy.gas_reserve_asset,
+      last_qualifying_activity: legacy.last_qualifying_activity,
+    };
+  };
+
+  const details = getLegacyDetails();
 
   return (
     <div className="space-y-6 pb-24 md:pb-8">
@@ -201,9 +259,13 @@ export const DashboardPage: React.FC = () => {
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div className="flex items-center gap-2">
               <CardTitle>Legacy Protection</CardTitle>
-              <StatusBadge status={legacyStatus} />
+              {details ? (
+                <StatusBadge status={details.status} className="ml-2" />
+              ) : (
+                <StatusBadge status={legacyStatus} />
+              )}
             </div>
-            {legacy ? (
+            {legacy && legacy.status !== 'not_configured' ? (
               <Button asChild variant="ghost" size="sm">
                 <Link to="/legacy-protection" className="text-xs font-semibold text-primary">
                   Details
@@ -214,34 +276,51 @@ export const DashboardPage: React.FC = () => {
           <CardContent>
             {legacy ? (
               <div className="space-y-4">
-                <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-2.5 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Next of kin:</span>
-                    <AddressDisplay value={legacy.next_of_kin} variant="short" />
+                {details ? (
+                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-2.5 text-xs">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Next of kin:</span>
+                      <AddressDisplay value={details.next_of_kin} variant="short" />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Dormancy period:</span>
+                      <span className="font-semibold text-foreground">
+                        {details.days} days
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Gas reserve:</span>
+                      <span className="font-semibold text-foreground">
+                        {formatAssetAmount(details.gas_reserve_asset, details.gas_reserve)} {details.gas_reserve_asset}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Last heartbeat:</span>
+                      <span className="font-medium text-foreground">
+                        {formatDateTime(details.last_qualifying_activity)}
+                      </span>
+                    </div>
+                    {details.status !== 'paused' && details.status !== 'executed' && (
+                      <div>
+                        <span className="text-muted-foreground">Time remaining:</span>
+                        <span className="font-semibold text-foreground">
+                          {details.secondsRemaining > 0
+                            ? `${Math.ceil(details.secondsRemaining / 86400)} days`
+                            : 'Active'}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Dormancy period:</span>
-                    <span className="font-semibold text-foreground">{legacy.dormancy_days} days</span>
+                ) : (
+                  <div className="text-center py-8">
+                    <StatusBadge status={legacyStatus} className="mx-auto mb-2" />
+                    <p className="text-muted-foreground">Legacy protection status</p>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Gas reserve:</span>
-                    <span className="font-semibold text-foreground">
-                      {legacy.gas_reserve} {legacy.gas_reserve_asset}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Last activity:</span>
-                    <span className="font-medium text-foreground">
-                      {formatDateTime(legacy.last_qualifying_activity)}
-                    </span>
-                  </div>
-                </div>
+                )}
 
                 <Button asChild variant="outline" className="w-full text-xs" size="sm">
-                  <Link to="/activity">
-                    <Clock className="mr-2 h-3.5 w-3.5" />
-                    Verify on-chain heartbeat timer
-                  </Link>
+                  <Clock className="mr-2 h-3.5 w-3.5" />
+                  Verify on-chain heartbeat timer
                 </Button>
               </div>
             ) : (
@@ -291,6 +370,7 @@ export const DashboardPage: React.FC = () => {
             <div className="divide-y divide-border/60">
               {transactions.slice(0, 5).map((tx) => {
                 const isIncoming = tx.kind === 'deposit' || tx.kind === 'receive';
+                const txStatus = tx.status ?? 'completed';
                 return (
                   <Link
                     key={tx.id}
@@ -303,8 +383,8 @@ export const DashboardPage: React.FC = () => {
                           isIncoming
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             : tx.kind === 'bridge'
-                            ? 'bg-purple-500/10 text-purple-600'
-                            : 'bg-primary/10 text-primary'
+                            ? 'bg-purple-500/10 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400'
+                            : 'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary-200'
                         }`}
                       >
                         {isIncoming ? (
@@ -332,7 +412,7 @@ export const DashboardPage: React.FC = () => {
                         {isIncoming ? '+' : '-'}
                         {formatAssetAmount(tx.asset, tx.amount)} {tx.asset}
                       </p>
-                      <StatusBadge status={tx.status} className="mt-1" />
+                      <StatusBadge status={txStatus} className="mt-1" />
                     </div>
                   </Link>
                 );
