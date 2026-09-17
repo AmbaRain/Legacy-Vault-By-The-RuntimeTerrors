@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Shield,
@@ -13,6 +13,8 @@ import {
   Lock,
 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { gsap } from 'gsap';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { PublicNavbar } from '../components/layout/PublicNavbar';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
@@ -20,9 +22,90 @@ import { LegacyVaultLogo, LegacyVaultIcon } from '../components/ui/LegacyVaultLo
 import { HeroBackground } from '../components/ui/HeroBackground';
 
 export const LandingPage: React.FC = () => {
-  const [reducedMotion, setReducedMotion] = React.useState(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
+  const reducedMotion = useReducedMotion();
+  const heroRef = useRef<HTMLDivElement>(null);
+  const featuresRef = useRef<HTMLHeadingElement>(null);
+  const stepsRef = useRef<HTMLHeadingElement>(null);
+  const securityRef = useRef<HTMLHeadingElement>(null);
+  const ctx = useRef<any | null>();
+
+  // GSAP context for proper cleanup
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    ctx.current = gsap.context(() => {
+      // Hero content reveal using GSAP timeline
+      const tl = gsap.timeline({
+        defaults: { duration: 0.6, ease: 'power3.out' },
+        paused: true,
+      });
+
+      const elements = [
+        { el: heroRef.current?.querySelector('.hero-label'), offset: 0 },
+        { el: heroRef.current?.querySelector('.hero-heading'), offset: '-=0.3' },
+        { el: heroRef.current?.querySelector('.hero-copy'), offset: '-=0.3' },
+        { el: heroRef.current?.querySelector('.primary-cta'), offset: '-=0.3' },
+        { el: heroRef.current?.querySelector('.secondary-cta'), offset: '-=0.2' },
+      ];
+
+      elements.forEach(({ el, offset }) => {
+        if (el) {
+          tl.from(el, { opacity: 0, y: 20 + (offset ? (offset as any) * 10 : 0) });
+        }
+      });
+
+      tl.play();
+    });
+
+    return () => {
+      ctx.current?.revert();
+    };
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
+    ctx.current = gsap.context(() => {
+      const featuresHeading = featuresRef.current;
+      const stepsHeading = stepsRef.current;
+      const securityHeading = securityRef.current;
+
+      const featuresTl = gsap.timeline({
+        defaults: { duration: 0.6, ease: 'power3.out' },
+        paused: true,
+      });
+
+      const stepsTl = gsap.timeline({
+        defaults: { duration: 0.6, ease: 'power3.out' },
+        paused: true,
+      });
+
+      const securityTl = gsap.timeline({
+        defaults: { duration: 0.6, ease: 'power3.out' },
+        paused: true,
+      });
+
+      if (featuresHeading) {
+        featuresTl.from(featuresHeading, { opacity: 0, y: 20 });
+      }
+
+      if (stepsHeading) {
+        stepsTl.from(stepsHeading, { opacity: 0, y: 20 });
+      }
+
+      if (securityHeading) {
+        securityTl.from(securityHeading, { opacity: 0, y: 20 });
+      }
+
+      featuresTl.play();
+      stepsTl.play();
+      securityTl.play();
+    });
+
+    return () => {
+      ctx.current?.revert();
+    };
+  }, [reducedMotion]);
 
   const features = [
     {
@@ -62,16 +145,19 @@ export const LandingPage: React.FC = () => {
       number: '01',
       title: 'Connect or Create',
       description: 'Generate a fresh Starknet vault address or link your existing wallet in seconds.',
+      icon: Wallet,
     },
     {
       number: '02',
       title: 'Configure Inheritance',
       description: 'Specify your next of kin, choose a dormancy period (30–365 days), and fund gas reserve.',
+      icon: Shuffle,
     },
     {
       number: '03',
       title: 'Rest Assured',
       description: 'Smart contracts enforce your instructions transparently without trusting third-party custodians.',
+      icon: Clock,
     },
   ];
 
@@ -82,12 +168,14 @@ export const LandingPage: React.FC = () => {
       <HeroBackground />
 
       <motion.div
+        ref={heroRef}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          duration: reducedMotion ? 0.1 : 0.5,
-          ease: 'easeOut',
+          duration: reducedMotion ? 0 : 0.5,
+          ease: 'power3.out',
         }}
+        reducedMotion={reducedMotion}
         className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 sm:pt-20"
       >
         <span className="text-xs font-bold tracking-[0.25em] text-[#8E95A0] uppercase">
@@ -123,7 +211,8 @@ export const LandingPage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: reducedMotion ? 0 : 0.5 }}
+          reducedMotion={reducedMotion}
           className="vault-surface overflow-hidden rounded-3xl p-6 sm:p-10 shadow-2xl border border-vault/20"
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
@@ -136,10 +225,10 @@ export const LandingPage: React.FC = () => {
               </h2>
               <p className="mt-2 text-sm sm:text-base text-vault-foreground/80 max-w-xl">
                 Traditional wallets disappear forever if your keys are lost. Legacy Vault introduces
-                inactivity heartbeats that safeguard your family’s financial future without giving up your custody.
+                inactivity heartbeats that safeguard your family's financial future without giving up your custody.
               </p>
             </div>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} reducedMotion={reducedMotion}>
               <Button asChild className="vault-button-solid self-start md:self-auto shrink-0">
                 <Link to="/welcome">
                   Get Started
@@ -162,16 +251,17 @@ export const LandingPage: React.FC = () => {
               <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
               <span className="text-sm font-medium text-vault-foreground">Adjustable dormancy periods</span>
             </div>
-          </div>
-        </motion.div>
-      </section>
+</div>
 
-      {/* Core Features Grid */}
+    </motion.div>
+  </section>
+
+  {/* Core Features Grid */}
       <section className="bg-muted/40 py-16 sm:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground">
-              Everything you need for everyday crypto and tomorrow’s peace of mind
+            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground" ref={featuresRef}>
+              Everything you need for everyday crypto and tomorrow's peace of mind
             </h2>
             <p className="mt-3 text-muted-foreground text-sm sm:text-base">
               Manage balances, bridge tokens, send transactions, and automate succession planning in one seamless interface.
@@ -187,8 +277,9 @@ export const LandingPage: React.FC = () => {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                  transition={{ duration: reducedMotion ? 0 : 0.4, delay: i * 0.08 }}
+                  whileHover={{ y: -5, transition: { duration: reducedMotion ? 0 : 0.2 } }}
+                  reducedMotion={reducedMotion}
                 >
                   <Card className="h-full border-border/80 transition-shadow hover:shadow-lg">
                     <CardContent className="p-6">
@@ -217,7 +308,7 @@ export const LandingPage: React.FC = () => {
             <span className="text-xs font-bold uppercase tracking-wider text-primary">
               Simple 3-Step Setup
             </span>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground">
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-tight text-foreground" ref={stepsRef}>
               How Legacy Vault works
             </h2>
             <p className="mt-3 text-muted-foreground text-sm sm:text-base">
@@ -226,29 +317,34 @@ export const LandingPage: React.FC = () => {
           </div>
 
           <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
-            {steps.map((s, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: idx * 0.12 }}
-                whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                className="relative rounded-2xl border border-border bg-card p-6 shadow-xs flex flex-col justify-between"
-              >
-                <div>
-                  <span className="font-display text-3xl font-black text-primary/30">
-                    {s.number}
-                  </span>
-                  <h3 className="mt-2 font-display text-xl font-bold text-foreground">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {s.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+            {steps.map((s, idx) => {
+              const Icon = s.icon;
+              return (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: idx * 0.12 }}
+                  whileHover={{ y: -4, transition: { duration: reducedMotion ? 0 : 0.2 } }}
+                  reducedMotion={reducedMotion}
+                >
+                  <Card className="h-full border-border/80 transition-shadow hover:shadow-lg">
+                    <CardContent className="p-6">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <h3 className="mt-4 font-display text-lg font-semibold text-foreground">
+                        {s.title}
+                      </h3>
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                        {s.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -265,7 +361,7 @@ export const LandingPage: React.FC = () => {
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Lock className="h-6 w-6" />
           </div>
-          <h2 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-foreground">
+          <h2 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-foreground" ref={securityRef}>
             Security by cryptographic design
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm sm:text-base text-muted-foreground">

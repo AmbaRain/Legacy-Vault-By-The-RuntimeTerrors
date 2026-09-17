@@ -26,9 +26,10 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
     h4: 'text-base sm:text-lg',
   };
 
+  const Tag = as;
   return (
-    <{as} className={`${base} ${colors[variant]} ${sizes[as]} ${className}`} {...props}>
+    <Tag className={`${base} ${colors[variant]} ${sizes[Tag]} ${className}`} {...props}>
       {children}
-    </{as}>
+    </Tag>
   );
 };

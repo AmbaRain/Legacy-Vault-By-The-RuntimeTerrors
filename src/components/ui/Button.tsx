@@ -19,14 +19,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ) : null;
 
     const variants = {
-      default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90 [&:active]:opacity-90 rounded-lg',
+      default: 'bg-primary text-primary-foreground border border-primary/20 shadow hover:bg-primary/90 [&:active]:opacity-90 rounded-lg',
       outline:
-        'border border-input bg-background hover:bg-muted [&:active]:opacity-90 hover:text-foreground text-foreground rounded-lg',
-      secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 [&:active]:opacity-90 rounded-lg',
-      ghost: 'hover:bg-muted [&:active]:opacity-90 text-foreground rounded-lg',
+        'border border-border bg-background hover:bg-muted [&:active]:opacity-90 hover:text-foreground text-foreground rounded-lg',
+      secondary: 'bg-secondary text-secondary-foreground border border-secondary/20 hover:bg-secondary/80 [&:active]:opacity-90 rounded-lg',
+      ghost: 'bg-background/50 hover:bg-muted [&:active]:opacity-90 text-foreground rounded-lg',
       destructive:
         'bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 [&:active]:opacity-90 rounded-lg',
-      vault: 'bg-vault-foreground text-vault hover:bg-vault-foreground/90 font-semibold rounded-lg [&:active]:opacity-90',
+      vault: 'bg-vault-foreground text-foreground hover:bg-vault-foreground/90 font-semibold rounded-lg [&:active]:opacity-90',
     };
 
     const sizes = {

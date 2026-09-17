@@ -14,6 +14,7 @@ import {
   Menu,
   X,
   Shuffle,
+  CircleDot,
 } from 'lucide-react';
 import { useVault } from '../../context/VaultContext';
 import { AddressDisplay } from '../ui/AddressDisplay';
