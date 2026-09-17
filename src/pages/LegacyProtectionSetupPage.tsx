@@ -25,6 +25,7 @@ export const LegacyProtectionSetupPage: React.FC = () => {
   const [gasReserve, setGasReserve] = useState<number>(legacy?.gas_reserve ?? 0.05);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const walletAddress = vault?.profile?.wallet_address;
 
@@ -59,7 +60,9 @@ export const LegacyProtectionSetupPage: React.FC = () => {
   };
 
   const handleActivate = async () => {
+    if (submitted) return;
     setError('');
+    setSubmitted(true);
     setPending(true);
     try {
       await setupLegacyProtection({
@@ -72,6 +75,7 @@ export const LegacyProtectionSetupPage: React.FC = () => {
       setError(err.message || 'Could not activate legacy protection.');
     } finally {
       setPending(false);
+      setSubmitted(false);
     }
   };
 
@@ -280,11 +284,11 @@ export const LegacyProtectionSetupPage: React.FC = () => {
             <Button
               className="w-full"
               size="lg"
-              disabled={pending}
+              disabled={pending || submitted}
               onClick={handleActivate}
             >
+              {pending ? 'Activating Policy...' : submitted ? 'Activating...' : 'Activate Legacy Protection'}
               <Check className="mr-2 h-4 w-4" />
-              {pending ? 'Activating Policy...' : 'Activate Legacy Protection'}
             </Button>
 
             <button

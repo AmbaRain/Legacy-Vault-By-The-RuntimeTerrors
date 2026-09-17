@@ -92,31 +92,11 @@ export const ActivityPage: React.FC = () => {
               className="vault-button-solid self-start md:self-auto shrink-0"
               size="lg"
             >
-              <motion.div
-                animate={{ scale: [1, 1.25, 1] }}
-                transition={{ repeat: Infinity, duration: 1.2, ease: 'easeInOut' }}
-                className="mr-2 inline-flex"
-              >
-                <HeartPulse className="h-5 w-5 text-red-400" />
-              </motion.div>
+              <HeartPulse className="h-5 w-5 text-red-400" />
               {pending ? 'Recording Heartbeat...' : 'Send Heartbeat Ping'}
             </Button>
           </motion.div>
         </div>
-
-        <AnimatePresence>
-          {success && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, height: 0 }}
-              animate={{ opacity: 1, y: 0, height: 'auto' }}
-              exit={{ opacity: 0, y: -10, height: 0 }}
-              className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 p-3 text-xs font-medium text-emerald-200 overflow-hidden"
-            >
-              <CheckCircle2 className="h-4 w-4 text-emerald-300" />
-              Heartbeat successfully broadcast to Starknet. Dormancy counter has been reset!
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* Guidelines Grid */}
