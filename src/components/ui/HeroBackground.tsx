@@ -5,6 +5,10 @@ const HeroBackground: React.FC = () => {
     ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
     : false;
 
+  const bgImage = isReducedMotion
+    ? '/media/legacy-vault-hero.webp'
+    : '/media/legacy-vault-hero.webp';
+
   return (
     <section
       className="relative overflow-hidden py-16 sm:py-24"
@@ -13,9 +17,7 @@ const HeroBackground: React.FC = () => {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          backgroundImage: isReducedMotion
-            ? 'url("/media/legacy-vault-hero.webp")'
-            : 'url("/media/legacy-vault-hero.webp")',
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

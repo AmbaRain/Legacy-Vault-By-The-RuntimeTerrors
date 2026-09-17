@@ -20,6 +20,10 @@ import { LegacyVaultLogo, LegacyVaultIcon } from '../components/ui/LegacyVaultLo
 import { HeroBackground } from '../components/ui/HeroBackground';
 
 export const LandingPage: React.FC = () => {
+  const [reducedMotion, setReducedMotion] = React.useState(
+    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+
   const features = [
     {
       icon: Wallet,
@@ -77,7 +81,15 @@ export const LandingPage: React.FC = () => {
 
       <HeroBackground />
 
-      <div className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 sm:pt-20">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: reducedMotion ? 0.1 : 0.5,
+          ease: 'easeOut',
+        }}
+        className="relative z-10 mx-auto max-w-5xl px-4 text-center sm:px-6 sm:pt-20"
+      >
         <span className="text-xs font-bold tracking-[0.25em] text-[#8E95A0] uppercase">
           More Than A Wallet
         </span>
@@ -103,7 +115,7 @@ export const LandingPage: React.FC = () => {
             <Link to="/how-it-works">How It Works</Link>
           </Button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Hero Feature Box Preview */}
       <section className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">

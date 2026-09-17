@@ -40,6 +40,7 @@ export const ActivityPage: React.FC = () => {
   const lastActivity = legacy.last_qualifying_activity;
   const elapsed = lastActivity ? daysSince(lastActivity) : 0;
   const remainingDays = Math.max(0, legacy.dormancy_days - elapsed);
+  const hasReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const handleHeartbeat = async () => {
     setPending(true);
@@ -85,7 +86,10 @@ export const ActivityPage: React.FC = () => {
             </p>
           </div>
 
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+          <motion.div
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: hasReducedMotion ? 1 : 0.97 }}
+          >
             <Button
               onClick={handleHeartbeat}
               disabled={pending}
@@ -98,6 +102,19 @@ export const ActivityPage: React.FC = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* Success feedback */}
+      {success && (
+        <motion.div
+          initial={{ opacity: 0, y: -10, height: 0 }}
+          animate={{ opacity: 1, y: 0, height: 'auto' }}
+          exit={{ opacity: 0, y: -10, height: 0 }}
+          className="mt-6 flex items-center gap-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 p-3 text-xs font-medium text-emerald-200 overflow-hidden"
+        >
+          <CheckCircle2 className="h-4 w-4 text-emerald-300" />
+          Heartbeat successfully broadcast to Starknet. Dormancy counter has been reset!
+        </motion.div>
+      )}
 
       {/* Guidelines Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
