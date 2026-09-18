@@ -18,15 +18,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <span className="animate-spin h-4 w-4 mr-2 shrink-0" />
     ) : null;
 
-    const variants = {
-      default: 'bg-primary text-primary-foreground border border-primary/20 shadow hover:bg-primary/90 [&:active]:opacity-90 rounded-lg',
+const variants = {
+      default: 'bg-primary text-primary-foreground border border-primary/50 shadow hover:bg-primary/90 [&:active]:opacity-90 [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-primary [&:focus-visible]:ring-offset-2 rounded-xl font-semibold py-3 px-5 cursor-pointer transition-colors',
       outline:
-        'border border-border bg-background hover:bg-muted [&:active]:opacity-90 hover:text-foreground text-foreground rounded-lg',
-      secondary: 'bg-secondary text-secondary-foreground border border-secondary/20 hover:bg-secondary/80 [&:active]:opacity-90 rounded-lg',
-      ghost: 'bg-background/50 hover:bg-muted [&:active]:opacity-90 text-foreground rounded-lg',
+        'border border-2 border-border bg-transparent hover:bg-muted/80 hover:text-foreground rounded-xl font-sm py-2 px-3 cursor-pointer [&:active]:opacity-90 [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-primary [&:focus-visible]:ring-offset-2',
+      secondary: 'bg-secondary text-secondary-foreground border border-primary/20 hover:bg-primary/10 [&:active]:opacity-90 rounded-xl font-sm py-2 px-3 cursor-pointer [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-primary [&:focus-visible]:ring-offset-2',
+      ghost: 'bg-background/50 hover:bg-muted [&:active]:opacity-90 text-foreground rounded-xl font-medium py-2 px-3 cursor-pointer [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-primary [&:focus-visible]:ring-offset-2',
       destructive:
-        'bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 [&:active]:opacity-90 rounded-lg',
-      vault: 'bg-vault-foreground text-foreground hover:bg-vault-foreground/90 font-semibold rounded-lg [&:active]:opacity-90',
+        'bg-destructive text-destructive-foreground shadow hover:bg-destructive/90 [&:active]:opacity-90 rounded-xl font-semibold py-2 px-3 cursor-pointer [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-destructive [&:focus-visible]:ring-offset-2',
+      vault: 'bg-vault-foreground text-foreground hover:bg-vault-foreground/90 font-semibold rounded-xl py-2 px-3 cursor-pointer [&:focus-visible]:outline-none [&:focus-visible]:ring-2 [&:focus-visible]:ring-primary [&:focus-visible]:ring-offset-2',
     };
 
     const sizes = {
