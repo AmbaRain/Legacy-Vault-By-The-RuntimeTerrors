@@ -355,9 +355,23 @@ body {
 
 /* -- Page-level invariants -- */
 
-/* Ensure all links have reasonable underlines */
+/* Ensure links default to inherit without polluting buttons or nav elements */
 a {
-  @apply text-primary hover:underline hover:text-[#AAFF00];
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Explicit text links within paragraphs or standalone prose */
+p a:not([class*="btn"]):not([class*="button"]):not([class*="vault-button"]):not([class*="badge"]),
+.text-link {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+p a:not([class*="btn"]):not([class*="button"]):not([class*="vault-button"]):not([class*="badge"]):hover,
+.text-link:hover {
+  color: #AAFF00;
+  text-decoration: underline;
 }
 
 /* Ensure inputs respect the token palette */
@@ -369,14 +383,28 @@ input, select, textarea {
 
 /* Buttons: preserve existing vault button styles as fallback */
 .vault-button-solid {
-  @apply bg-primary text-primary-foreground font-semibold transition-all 
+  @apply bg-primary !text-primary-foreground font-semibold transition-all 
          hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary 
-         focus-visible:ring-offset-2;
+         focus-visible:ring-offset-2 cursor-pointer no-underline;
+  color: var(--primary-foreground) !important;
+}
+
+.vault-button-solid * {
+  color: var(--primary-foreground) !important;
 }
 
 .vault-button-outline {
-  @apply border border-primary text-primary-foreground bg-transparent 
-         hover:bg-primary/10 hover:text-primary focus-visible:ring-2 
-         focus-visible:ring-primary focus-visible:ring-offset-2;
+  @apply border border-primary/50 !text-foreground bg-transparent 
+         hover:bg-primary/10 hover:!text-primary hover:border-primary focus-visible:ring-2 
+         focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer no-underline;
+  color: var(--foreground) !important;
+}
+
+.vault-button-outline * {
+  color: inherit !important;
+}
+
+.vault-button-outline:hover {
+  color: var(--primary) !important;
 }
 
