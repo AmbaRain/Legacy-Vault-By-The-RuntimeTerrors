@@ -21,6 +21,9 @@ async function startServer() {
   // API routes mounted FIRST
   app.use('/api', apiRouter);
 
+  // Serve static assets from public folder directly (videos, webp, icons)
+  app.use(express.static(path.join(process.cwd(), 'public')));
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
