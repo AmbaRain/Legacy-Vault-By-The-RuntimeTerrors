@@ -20,7 +20,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const base =
-      'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none cursor-pointer shrink-0 select-none [&_svg]:shrink-0 [&_svg.mr-2]:mr-0 [&_svg.ml-2]:ml-0 [&_svg.mr-1\\.5]:mr-0 [&_svg.ml-1\\.5]:ml-0';
+      'inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-50 disabled:pointer-events-none cursor-pointer shrink-0 select-none [&_svg]:shrink-0';
 
     const variants = {
       default: 'bg-primary text-primary-foreground font-semibold shadow-sm hover:bg-primary/90 rounded-lg',
