@@ -28,6 +28,13 @@ export const defaultProvider = new RpcProvider({
   nodeUrl: STARKNET_NETWORKS.SEPOLIA.nodeUrl,
 });
 
+export const STARKNET_TOKENS = {
+  STRK_SEPOLIA: '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
+  ETH_SEPOLIA: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+  USDC_SEPOLIA: '0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8',
+  DEFAULT_VAULT: '0x07b7194ffba17045b78b5ce534346e01a88dbce04c632876615b138ff40c4a45',
+};
+
 // -------------------------------------------------------------------------
 // Cairo Smart Contract Types & Structs (Matching Cairo 2.x interface)
 // -------------------------------------------------------------------------
@@ -144,6 +151,24 @@ export const INHERITANCE_VAULT_ABI = [
  * Use these with `account.execute(calls)` to exploit Starknet's native multicall.
  */
 export const ContractCallBuilder = {
+  approveToken(tokenAddress: string, spender: string, amount: string): Call {
+    const amountU256 = uint256.bnToUint256(amount);
+    return {
+      contractAddress: tokenAddress,
+      entrypoint: 'approve',
+      calldata: [spender, amountU256.low.toString(), amountU256.high.toString()],
+    };
+  },
+
+  fundVault(contractAddress: string, tokenAddress: string, amount: string): Call {
+    const amountU256 = uint256.bnToUint256(amount);
+    return {
+      contractAddress,
+      entrypoint: 'fund_vault',
+      calldata: [tokenAddress, amountU256.low.toString(), amountU256.high.toString()],
+    };
+  },
+
   configureInheritance(
     contractAddress: string,
     beneficiary: string,

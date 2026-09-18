@@ -167,7 +167,7 @@ export const LegacyProtectionPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border md:col-span-2">
+        <Card className="border-border">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-muted-foreground">
               Inheritance Eligibility Date
@@ -204,6 +204,32 @@ export const LegacyProtectionPage: React.FC = () => {
               <Link to="/activity">
                 <Clock className="mr-1.5 h-4 w-4" />
                 View Activity Log
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Beneficiary Claim Portal Action Card */}
+        <Card className="border-emerald-500/30 bg-emerald-500/5 md:col-span-2">
+          <CardHeader className="pb-2">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold text-emerald-400">
+                Beneficiary Claim & Pollar SEP-24 Off-Ramp Portal
+              </CardTitle>
+              <span className="rounded-full bg-emerald-500/15 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                GASLESS CLAIM READY
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                When dormancy triggers, your beneficiary can claim gaslessly using the Starknet AVNU/Cartridge paymaster and off-ramp directly to their Bolivian bank account (Banco Unión, BNB, etc.) via Pollar SEP-24.
+              </p>
+            </div>
+            <Button asChild className="bg-emerald-600 hover:bg-emerald-500 text-white shrink-0" size="sm">
+              <Link to={`/claim?vault=${vault?.profile?.wallet_address || ''}&beneficiary=${encodeURIComponent(legacy.next_of_kin)}`}>
+                Open Beneficiary Claim Portal
               </Link>
             </Button>
           </CardContent>

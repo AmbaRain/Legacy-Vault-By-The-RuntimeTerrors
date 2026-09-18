@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Check, Copy } from 'lucide-react';
 
 export interface WalletAddressProps {
   value?: string;
@@ -28,21 +29,23 @@ export const WalletAddress: React.FC<WalletAddressProps> = ({
   };
 
   return (
-    <div className={`flex items-center gap-2 rounded-md border border-border/50 bg-muted/50 p-3 ${className}`}>
-      <span className="font-mono text-sm text-foreground break-all">
+    <div className={`inline-flex items-center gap-2 rounded-lg border border-border/60 bg-muted/40 px-3 py-1.5 ${className}`}>
+      <span className="font-mono text-xs text-foreground break-all">
         {variant === 'short'
           ? `${value?.slice(0, 6)}...${value.slice(-4)}`
           : value}
       </span>
       <button
+        type="button"
         onClick={handleCopy}
-        className="rounded-md bg-primary/10 px-2 py-1 text-xs text-primary hover:bg-primary/20 transition-colors"
+        className="inline-flex items-center justify-center rounded-md p-1 text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors cursor-pointer"
         aria-label="Copy address"
+        title="Copy address"
       >
         {copied ? (
-          <span className="h-3.5 w-3.5" />
+          <Check className="h-3.5 w-3.5 text-emerald-500" />
         ) : (
-          <span />
+          <Copy className="h-3.5 w-3.5" />
         )}
       </button>
     </div>
