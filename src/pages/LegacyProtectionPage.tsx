@@ -167,7 +167,7 @@ export const LegacyProtectionPage: React.FC = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-border">
+        <Card className="border-border md:col-span-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-muted-foreground">
               Inheritance Eligibility Date

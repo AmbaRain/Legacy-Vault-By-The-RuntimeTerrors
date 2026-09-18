@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+docs/frontend-reconnaissance.md
+docs/frontend-redesign-qa.md
+dev.log
+dist/
+node_modules/
