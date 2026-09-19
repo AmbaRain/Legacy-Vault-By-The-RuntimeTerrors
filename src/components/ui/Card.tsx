@@ -58,7 +58,7 @@ export const CardFooter: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
   children,
   ...props
 }) => (
-  <div className={`flex items-center p-5 pt-0 ${className}`} {...props}>
+  <div className={`flex items-center p-5 pt-3 ${className}`} {...props}>
     {children}
   </div>
 );

@@ -192,7 +192,7 @@ export const LandingPage: React.FC = () => {
           digital assets with security, simplicity and control — because your wealth deserves a legacy.
         </p>
 
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+        <div className="mt-10 sm:mt-12 pt-2 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button asChild size="lg" className="vault-button-solid w-full sm:w-auto text-base">
             <Link to="/auth?mode=signup">
               Create a Vault
@@ -216,20 +216,25 @@ export const LandingPage: React.FC = () => {
           className="vault-surface overflow-hidden rounded-3xl p-6 sm:p-10 shadow-2xl border border-vault/20"
         >
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
+            <div className="max-w-xl">
               <span className="text-xs font-semibold uppercase tracking-wider text-accent">
                 Autonomous Asset Security
               </span>
-              <h2 className="mt-1 font-display text-2xl sm:text-3xl font-bold text-vault-foreground">
+              <h2 className="mt-2 font-display text-2xl sm:text-3xl font-bold text-vault-foreground">
                 Set your legacy. Protect what matters.
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-vault-foreground/80 max-w-xl">
+              <p className="mt-3 text-sm sm:text-base text-vault-foreground/80 leading-relaxed">
                 Traditional wallets disappear forever if your keys are lost. Legacy Vault introduces
                 inactivity heartbeats that safeguard your family's financial future without giving up your custody.
               </p>
             </div>
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} reducedMotion={reducedMotion}>
-              <Button asChild className="vault-button-solid self-start md:self-auto shrink-0">
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              reducedMotion={reducedMotion}
+              className="mt-6 md:mt-0 pt-2 md:pt-0 shrink-0"
+            >
+              <Button asChild size="lg" className="vault-button-solid self-start md:self-auto shrink-0 text-base">
                 <Link to="/welcome">
                   Get Started
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -368,11 +373,11 @@ export const LandingPage: React.FC = () => {
             No middleman holds your keys. No company can freeze your assets. Your succession rules
             execute strictly according to verified cryptographic code.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Button asChild variant="outline">
+          <div className="mt-10 sm:mt-12 pt-2 flex flex-wrap justify-center gap-4">
+            <Button asChild variant="outline" size="lg">
               <Link to="/security">Read Security Principles</Link>
             </Button>
-            <Button asChild>
+            <Button asChild size="lg">
               <Link to="/auth?mode=signup">Open Vault Now</Link>
             </Button>
           </div>

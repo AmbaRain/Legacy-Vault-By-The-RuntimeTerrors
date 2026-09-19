@@ -138,7 +138,7 @@ export const DashboardPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 mt-4 sm:mt-0 pt-2 sm:pt-0">
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button asChild className="vault-button-solid" size="md">
                 <Link to="/deposit">
@@ -318,10 +318,12 @@ export const DashboardPage: React.FC = () => {
                   </div>
                 )}
 
-                <Button asChild variant="outline" className="w-full text-xs" size="sm">
-                  <Clock className="mr-2 h-3.5 w-3.5" />
-                  Verify on-chain heartbeat timer
-                </Button>
+                <div className="pt-4">
+                  <Button asChild variant="outline" className="w-full text-xs" size="sm">
+                    <Clock className="mr-2 h-3.5 w-3.5" />
+                    Verify on-chain heartbeat timer
+                  </Button>
+                </div>
               </div>
             ) : (
               <EmptyState
