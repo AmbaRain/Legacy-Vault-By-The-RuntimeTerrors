@@ -28,6 +28,8 @@ import { WithdrawPage } from './pages/WithdrawPage';
 import { BridgePage } from './pages/BridgePage';
 import { LegacyProtectionPage } from './pages/LegacyProtectionPage';
 import { LegacyProtectionSetupPage } from './pages/LegacyProtectionSetupPage';
+import { LegacySetupPage } from './pages/LegacySetupPage';
+import { BeneficiaryClaimPortal } from './pages/BeneficiaryClaimPortal';
 import { ActivityPage } from './pages/ActivityPage';
 import { SettingsPage } from './pages/SettingsPage';
 
@@ -44,6 +46,11 @@ export default function App() {
           {/* Auth & Entry */}
           <Route path="/welcome" element={<WelcomePage />} />
           <Route path="/auth" element={<AuthPage />} />
+
+          {/* Beneficiary Claim Portal */}
+          <Route path="/claim" element={<BeneficiaryClaimPortal />} />
+          <Route path="/beneficiary-claim" element={<BeneficiaryClaimPortal />} />
+          <Route path="/beneficiary/claim" element={<BeneficiaryClaimPortal />} />
 
           {/* Onboarding Flow */}
           <Route path="/onboarding/setup" element={<OnboardingSetupPage />} />
@@ -117,6 +124,14 @@ export default function App() {
             }
           />
           <Route
+            path="/off-ramp"
+            element={
+              <AppLayout>
+                <WithdrawPage />
+              </AppLayout>
+            }
+          />
+          <Route
             path="/bridge"
             element={
               <AppLayout>
@@ -136,7 +151,15 @@ export default function App() {
             path="/legacy-protection/setup"
             element={
               <AppLayout>
-                <LegacyProtectionSetupPage />
+                <LegacySetupPage />
+              </AppLayout>
+            }
+          />
+          <Route
+            path="/legacy/setup"
+            element={
+              <AppLayout>
+                <LegacySetupPage />
               </AppLayout>
             }
           />

@@ -3,10 +3,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { LegacyVaultIcon } from '../components/ui/LegacyVaultLogo';
 import { Button } from '../components/ui/Button';
+import { HeroBackground } from '../components/ui/HeroBackground';
 
 export const WelcomePage: React.FC = () => {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#0B0F14] px-4 overflow-hidden">
+      {/* Ambient animated 3D video background */}
+      <HeroBackground opacity={0.75} showOverlay={true} />
+
       {/* Background ambient neon lime radial glow matching the visual */}
       <div className="pointer-events-none absolute -top-40 h-96 w-96 rounded-full bg-[#AAFF00]/5 blur-3xl" />
 

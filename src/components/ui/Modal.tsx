@@ -32,25 +32,27 @@ export const Modal: React.FC<ModalProps> = ({
   const overlayClass = reducedMotion ? 'fixed inset-0 bg-black/50' : 'fixed inset-0 bg-black/50 backdrop-blur-sm';
 
   return (
-    <div className={className}>
+    <div className={`fixed inset-0 z-50 flex items-center justify-center p-4 ${className}`}>
       <div
-        className={`overflow-y-auto h-full w-full ${overlayClass} rounded-lg border border-border/50 ${motionClass}`}
-      >
-        <div className="relative flex max-w-lg w-full mx-4 mt-8 p-6 border-border">
-          {title && (
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display font-semibold text-lg">{title}</h2>
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-md hover:bg-muted/50 transition-colors"
-                aria-label="Close modal"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          )}
-          <div className="prose max-w-none">{children}</div>
-        </div>
+        className={`fixed inset-0 ${overlayClass} ${motionClass}`}
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="relative z-10 flex flex-col max-w-lg w-full rounded-2xl border border-border bg-card p-6 shadow-2xl">
+        {title && (
+          <div className="flex items-center justify-between pb-4 border-b border-border/60">
+            <h2 className="font-display font-semibold text-lg text-foreground">{title}</h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-colors cursor-pointer"
+              aria-label="Close modal"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+        <div className="mt-4">{children}</div>
       </div>
     </div>
   );

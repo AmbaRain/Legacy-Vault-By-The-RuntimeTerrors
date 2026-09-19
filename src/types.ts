@@ -86,3 +86,49 @@ export interface VaultData {
   legacy?: LegacyProtection | null;
   activity: ActivityItem[];
 }
+
+export type RemittanceState =
+  | 'VAULT_FUNDED'
+  | 'STARKNET_CLAIMED'
+  | 'STELLAR_SUBMITTED'
+  | 'STELLAR_CONFIRMED'
+  | 'COMPLETED';
+
+export interface RemittanceRecord {
+  remittance_id: string;
+  vault_owner: string;
+  beneficiary_identifier: string;
+  stellar_beneficiary_address: string;
+  amount_usdc: number;
+  starknet_tx_hash?: string;
+  stellar_tx_hash?: string;
+  sep24_id?: string;
+  state: RemittanceState;
+  target_network: 'STELLAR';
+  error_message?: string;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface ClaimPipelineStep {
+  id: RemittanceState;
+  name: string;
+  completed: boolean;
+  tx_hash?: string;
+  sep24_id?: string;
+  timestamp?: string;
+}
+
+export interface ClaimStatusResponse {
+  status: 'idle' | 'success' | 'error';
+  vault_address?: string;
+  state?: RemittanceState;
+  remittance_id?: string;
+  remittance?: RemittanceRecord | null;
+  steps?: ClaimPipelineStep[];
+  is_terminal?: boolean;
+  can_offramp?: boolean;
+}
+

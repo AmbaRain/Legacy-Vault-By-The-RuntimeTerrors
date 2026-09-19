@@ -12,8 +12,8 @@ export const PublicNavbar: React.FC = () => {
   const isCurrent = (path: string) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/20 bg-background/90 backdrop-blur-md overflow-x-hidden">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/90 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex items-center">
           <LegacyVaultLogo variant="horizontal" size="md" />
         </Link>
@@ -21,7 +21,7 @@ export const PublicNavbar: React.FC = () => {
         <nav className="hidden items-center gap-6 md:flex">
           <Link
             to="/how-it-works"
-            className={`text-sm font-medium transition-colors hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+            className={`text-sm font-medium transition-colors hover:text-foreground ${
               isCurrent('/how-it-works') ? 'text-foreground font-semibold' : 'text-muted-foreground'
             }`}
           >
@@ -29,11 +29,19 @@ export const PublicNavbar: React.FC = () => {
           </Link>
           <Link
             to="/security"
-            className={`text-sm font-medium transition-colors hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+            className={`text-sm font-medium transition-colors hover:text-foreground ${
               isCurrent('/security') ? 'text-foreground font-semibold' : 'text-muted-foreground'
             }`}
           >
             Security
+          </Link>
+          <Link
+            to="/claim"
+            className={`text-sm font-medium transition-colors hover:text-foreground ${
+              isCurrent('/claim') ? 'text-foreground font-semibold' : 'text-muted-foreground'
+            }`}
+          >
+            Beneficiary Claim
           </Link>
         </nav>
 

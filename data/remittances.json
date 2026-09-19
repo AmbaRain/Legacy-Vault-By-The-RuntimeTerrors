@@ -1,0 +1,85 @@
+{
+  "remittances": {
+    "rem_1789728597937_cvbkd": {
+      "remittance_id": "rem_1789728597937_cvbkd",
+      "vault_owner": "0x07b7194ffba17045b78b5ce534346e01a88dbce04c632876615b138ff40c4a45",
+      "beneficiary_identifier": "STELLAR_USER_BOLIVIA_01",
+      "stellar_beneficiary_address": "GAUTCO2M6U3UUXN3ZDFO4YIELB7E5J6WZZYMYZ4PJJ7E5F6Y2U6XZ4PO",
+      "amount_usdc": 1250,
+      "starknet_tx_hash": "0x05f8bd078066a465d4e8fe6d386093c4c31bd5b1a403da3792bbd0a305b54e0c",
+      "state": "COMPLETED",
+      "target_network": "STELLAR",
+      "metadata": {
+        "amount_bob": 10625,
+        "bank": "Banco Union"
+      },
+      "created_at": "2026-09-18T10:49:57.938Z",
+      "updated_at": "2026-09-18T10:50:10.406Z",
+      "stellar_tx_hash": "stellar_tx_uh0wtbsr8o_7939",
+      "sep24_id": "sep24_poll_1789728597939_93we",
+      "completed_at": "2026-09-18T10:50:10.406Z"
+    }
+  },
+  "users": {
+    "stellar_user_bolivia_01": {
+      "user_id": "usr_bolivia_01",
+      "identifier": "STELLAR_USER_BOLIVIA_01",
+      "name": "Mateo Quispe Flores",
+      "email": "mateo.quispe@pollar.xyz",
+      "country": "Bolivia",
+      "stellar_wallet_address": "GAUTCO2M6U3UUXN3ZDFO4YIELB7E5J6WZZYMYZ4PJJ7E5F6Y2U6XZ4PO",
+      "bank_name": "Banco Unión",
+      "bank_account_number": "100000348912"
+    },
+    "usr_bolivia_01": {
+      "user_id": "usr_bolivia_01",
+      "identifier": "STELLAR_USER_BOLIVIA_01",
+      "name": "Mateo Quispe Flores",
+      "email": "mateo.quispe@pollar.xyz",
+      "country": "Bolivia",
+      "stellar_wallet_address": "GAUTCO2M6U3UUXN3ZDFO4YIELB7E5J6WZZYMYZ4PJJ7E5F6Y2U6XZ4PO",
+      "bank_name": "Banco Unión",
+      "bank_account_number": "100000348912"
+    },
+    "0x04bf6578a1670929a4a7537b83d16ca1f2113222e43bc09e9929288f3be1890b": {
+      "user_id": "usr_bolivia_02",
+      "identifier": "0x04bf6578a1670929a4a7537b83d16ca1f2113222e43bc09e9929288f3be1890b",
+      "name": "Valeria Condori",
+      "email": "valeria.condori@pollar.xyz",
+      "country": "Bolivia",
+      "stellar_wallet_address": "GB2Z4MYK6V5J22F5TWRMPO47B25GZ6MZZYMYZ4PJJ7E5F6Y2U6XZ4XYZ",
+      "bank_name": "Banco Nacional de Bolivia (BNB)",
+      "bank_account_number": "200004928172"
+    },
+    "usr_bolivia_02": {
+      "user_id": "usr_bolivia_02",
+      "identifier": "0x04bf6578a1670929a4a7537b83d16ca1f2113222e43bc09e9929288f3be1890b",
+      "name": "Valeria Condori",
+      "email": "valeria.condori@pollar.xyz",
+      "country": "Bolivia",
+      "stellar_wallet_address": "GB2Z4MYK6V5J22F5TWRMPO47B25GZ6MZZYMYZ4PJJ7E5F6Y2U6XZ4XYZ",
+      "bank_name": "Banco Nacional de Bolivia (BNB)",
+      "bank_account_number": "200004928172"
+    },
+    "0x05b6348ef53d9e038848f029b4e654279b940e4f": {
+      "user_id": "usr_nigeria_01",
+      "identifier": "0x05b6348ef53d9e038848f029b4e654279b940e4f",
+      "name": "Adewale Okonkwo",
+      "email": "adewale.o@busha.co",
+      "country": "Nigeria",
+      "stellar_wallet_address": "GCEZUM3CYRO3ZTOO4TG45MFF7A5S6BSQCAD32LBH5NDV374YF646AULA",
+      "bank_name": "Guaranty Trust Bank (GTBank)",
+      "bank_account_number": "0123456789"
+    },
+    "usr_nigeria_01": {
+      "user_id": "usr_nigeria_01",
+      "identifier": "0x05b6348ef53d9e038848f029b4e654279b940e4f",
+      "name": "Adewale Okonkwo",
+      "email": "adewale.o@busha.co",
+      "country": "Nigeria",
+      "stellar_wallet_address": "GCEZUM3CYRO3ZTOO4TG45MFF7A5S6BSQCAD32LBH5NDV374YF646AULA",
+      "bank_name": "Guaranty Trust Bank (GTBank)",
+      "bank_account_number": "0123456789"
+    }
+  }
+}

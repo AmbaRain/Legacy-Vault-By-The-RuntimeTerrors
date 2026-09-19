@@ -9,6 +9,9 @@ import {
   Clock,
   ArrowRight,
   Coins,
+  CreditCard,
+  Sparkles,
+  Building,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useVault } from '../context/VaultContext';
@@ -25,26 +28,7 @@ import {
   formatDateTime,
   formatUsd,
   getAssetConfig,
-  daysSince,
 } from '../utils/format';
-
-const STATUS_COLORS: Record<string, string> = {
-  active: 'bg-primary/15 text-primary',
-  warning: 'bg-amber-500/20 text-amber-800 dark:text-amber-300',
-  eligible: 'bg-primary/15 text-primary',
-  executed: 'bg-primary/15 text-primary',
-  not_configured: 'bg-muted text-muted-foreground',
-  paused: 'bg-muted text-muted-foreground',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  active: 'Active',
-  warning: 'Warning',
-  eligible: 'Eligible',
-  executed: 'Executed',
-  not_configured: 'Not configured',
-  paused: 'Paused',
-};
 
 export const DashboardPage: React.FC = () => {
   const { vault, totalBalanceUsd, legacyStatus } = useVault();
@@ -52,45 +36,6 @@ export const DashboardPage: React.FC = () => {
   const balances = vault?.balances ?? [];
   const transactions = vault?.transactions ?? [];
   const legacy = vault?.legacy;
-
-  const getLegacyDetails = () => {
-    if (!legacy || legacy.status === 'not_configured' || !legacy.dormancy_days) {
-      return null;
-    }
-    const days = daysSince(legacy.last_qualifying_activity ?? legacy.last_qualifying_activity ?? '');
-    const ratio = days / legacy.dormancy_days;
-    let status: string;
-    let secondsRemaining = 0;
-
-    if (legacy.status === 'paused') {
-      status = 'paused';
-    } else if (legacy.executed_at) {
-      status = 'executed';
-    } else if (ratio >= 1) {
-      status = 'eligible';
-      secondsRemaining = 0;
-    } else if (ratio >= 0.7) {
-      status = 'warning';
-      const daysRemaining = Math.ceil((1 - ratio) * legacy.dormancy_days);
-      secondsRemaining = daysRemaining * 86400;
-    } else {
-      status = 'active';
-      const daysRemaining = legacy.dormancy_days - days;
-      secondsRemaining = daysRemaining > 0 ? daysRemaining * 86400 : 0;
-    }
-
-    return {
-      status,
-      secondsRemaining,
-      days: legacy.dormancy_days,
-      next_of_kin: legacy.next_of_kin,
-      gas_reserve: legacy.gas_reserve,
-      gas_reserve_asset: legacy.gas_reserve_asset,
-      last_qualifying_activity: legacy.last_qualifying_activity,
-    };
-  };
-
-  const details = getLegacyDetails();
 
   return (
     <div className="space-y-6 pb-24 md:pb-8">
@@ -139,6 +84,22 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-4 sm:mt-0 pt-2 sm:pt-0">
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild className="bg-[#0BA4DB] text-white hover:bg-[#09A5DB] border-0 shadow-md" size="md">
+                <Link to="/deposit?tab=paystack">
+                  <CreditCard className="mr-2 h-4 w-4" />
+                  NGN On-Ramp
+                </Link>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button asChild className="bg-[#00A859] text-white hover:bg-[#008f4c] border-0 shadow-md" size="md">
+                <Link to="/off-ramp">
+                  <Building className="mr-2 h-4 w-4" />
+                  Local Off-Ramp
+                </Link>
+              </Button>
+            </motion.div>
             <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
               <Button asChild className="vault-button-solid" size="md">
                 <Link to="/deposit">
@@ -213,6 +174,94 @@ export const DashboardPage: React.FC = () => {
           );
         })}
       </div>
+ 
+      {/* On-Ramp & Off-Ramp Protocol Hub */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Paystack NGN On-Ramp Card */}
+        <div className="rounded-2xl border border-[#0BA4DB]/30 bg-gradient-to-br from-[#0BA4DB]/10 to-card p-4.5 flex flex-col justify-between shadow-xs">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-[#00C3F7]">
+                <CreditCard className="h-4 w-4" />
+                PAYSTACK NGN ON-RAMP 🇳🇬
+              </span>
+              <span className="rounded bg-[#0BA4DB]/20 px-2 py-0.5 text-[10px] font-mono font-bold text-[#0BA4DB]">
+                INFLOW
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-foreground">Fund Vault with Naira (NGN)</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Instant card, bank transfer, and USSD deposit directly to your Starknet vault.
+              Rate: 1 USD = ₦1,500.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-[#0BA4DB]/20 flex items-center justify-between">
+            <span className="text-xs font-mono text-muted-foreground">pk_test_6621...</span>
+            <Button asChild size="sm" className="bg-[#0BA4DB] hover:bg-[#09A5DB] text-white font-semibold">
+              <Link to="/deposit?tab=paystack">
+                Buy with Naira
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Busha NGN Off-Ramp Card */}
+        <div className="rounded-2xl border border-[#00A859]/30 bg-gradient-to-br from-[#00A859]/10 to-card p-4.5 flex flex-col justify-between shadow-xs">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-[#00A859]">
+                <Building className="h-4 w-4" />
+                BUSHA NGN OFF-RAMP 🇳🇬
+              </span>
+              <span className="rounded bg-[#00A859]/20 px-2 py-0.5 text-[10px] font-mono font-bold text-[#00A859]">
+                OUTFLOW
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-foreground">Liquidate to Nigerian Banks</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Quote real-time rates via Busha API and execute direct payouts to GTB, Access, Kuda, or Zenith.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-[#00A859]/20 flex items-center justify-between">
+            <span className="text-xs font-mono text-muted-foreground">POST /v1/quotes</span>
+            <Button asChild size="sm" className="bg-[#00A859] hover:bg-[#008f4c] text-white font-semibold">
+              <Link to="/off-ramp?tab=busha">
+                Sell to Naira
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Beneficiary Claim & Pollar SEP-24 Card */}
+        <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-card p-4.5 flex flex-col justify-between shadow-xs">
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                <Building className="h-4 w-4" />
+                POLLAR BOB OFF-RAMP 🇧🇴
+              </span>
+              <span className="rounded bg-emerald-500/20 px-2 py-0.5 text-[10px] font-mono font-bold text-emerald-400">
+                SEP-24
+              </span>
+            </div>
+            <p className="text-sm font-semibold text-foreground">Bolivian Bank Off-Ramp</p>
+            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+              Stellar format relay with automated withdrawal to Banco Unión, BNB, BMSC, or BCP accounts.
+            </p>
+          </div>
+          <div className="mt-4 pt-3 border-t border-emerald-500/20 flex items-center justify-between">
+            <span className="text-xs font-mono text-muted-foreground">pub_testnet_bf...</span>
+            <Button asChild size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">
+              <Link to="/claim">
+                Claim / Pollar
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Assets List */}
@@ -259,13 +308,9 @@ export const DashboardPage: React.FC = () => {
           <CardHeader className="flex flex-row items-center justify-between pb-3">
             <div className="flex items-center gap-2">
               <CardTitle>Legacy Protection</CardTitle>
-              {details ? (
-                <StatusBadge status={details.status} className="ml-2" />
-              ) : (
-                <StatusBadge status={legacyStatus} />
-              )}
+              <StatusBadge status={legacyStatus} />
             </div>
-            {legacy && legacy.status !== 'not_configured' ? (
+            {legacy ? (
               <Button asChild variant="ghost" size="sm">
                 <Link to="/legacy-protection" className="text-xs font-semibold text-primary">
                   Details
@@ -276,52 +321,35 @@ export const DashboardPage: React.FC = () => {
           <CardContent>
             {legacy ? (
               <div className="space-y-4">
-                {details ? (
-                  <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-2.5 text-xs">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Next of kin:</span>
-                      <AddressDisplay value={details.next_of_kin} variant="short" />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Dormancy period:</span>
-                      <span className="font-semibold text-foreground">
-                        {details.days} days
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Gas reserve:</span>
-                      <span className="font-semibold text-foreground">
-                        {formatAssetAmount(details.gas_reserve_asset, details.gas_reserve)} {details.gas_reserve_asset}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Last heartbeat:</span>
-                      <span className="font-medium text-foreground">
-                        {formatDateTime(details.last_qualifying_activity)}
-                      </span>
-                    </div>
-                    {details.status !== 'paused' && details.status !== 'executed' && (
-                      <div>
-                        <span className="text-muted-foreground">Time remaining:</span>
-                        <span className="font-semibold text-foreground">
-                          {details.secondsRemaining > 0
-                            ? `${Math.ceil(details.secondsRemaining / 86400)} days`
-                            : 'Active'}
-                        </span>
-                      </div>
-                    )}
+                <div className="rounded-xl border border-border/60 bg-muted/20 p-4 space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Next of kin:</span>
+                    <AddressDisplay value={legacy.next_of_kin} variant="short" />
                   </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <StatusBadge status={legacyStatus} className="mx-auto mb-2" />
-                    <p className="text-muted-foreground">Legacy protection status</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Dormancy period:</span>
+                    <span className="font-semibold text-foreground">{legacy.dormancy_days} days</span>
                   </div>
-                )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Gas reserve:</span>
+                    <span className="font-semibold text-foreground">
+                      {legacy.gas_reserve} {legacy.gas_reserve_asset}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Last activity:</span>
+                    <span className="font-medium text-foreground">
+                      {formatDateTime(legacy.last_qualifying_activity)}
+                    </span>
+                  </div>
+                </div>
 
                 <div className="pt-4">
                   <Button asChild variant="outline" className="w-full text-xs" size="sm">
-                    <Clock className="mr-2 h-3.5 w-3.5" />
-                    Verify on-chain heartbeat timer
+                    <Link to="/activity">
+                      <Clock className="mr-2 h-3.5 w-3.5" />
+                      Verify on-chain heartbeat timer
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -372,7 +400,6 @@ export const DashboardPage: React.FC = () => {
             <div className="divide-y divide-border/60">
               {transactions.slice(0, 5).map((tx) => {
                 const isIncoming = tx.kind === 'deposit' || tx.kind === 'receive';
-                const txStatus = tx.status ?? 'completed';
                 return (
                   <Link
                     key={tx.id}
@@ -385,8 +412,8 @@ export const DashboardPage: React.FC = () => {
                           isIncoming
                             ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
                             : tx.kind === 'bridge'
-                            ? 'bg-purple-500/10 text-purple-600 dark:bg-purple-500/10 dark:text-purple-400'
-                            : 'bg-primary/10 text-primary dark:bg-primary/10 dark:text-primary-200'
+                            ? 'bg-purple-500/10 text-purple-600'
+                            : 'bg-primary/10 text-primary'
                         }`}
                       >
                         {isIncoming ? (
@@ -414,7 +441,7 @@ export const DashboardPage: React.FC = () => {
                         {isIncoming ? '+' : '-'}
                         {formatAssetAmount(tx.asset, tx.amount)} {tx.asset}
                       </p>
-                      <StatusBadge status={txStatus} className="mt-1" />
+                      <StatusBadge status={tx.status} className="mt-1" />
                     </div>
                   </Link>
                 );
