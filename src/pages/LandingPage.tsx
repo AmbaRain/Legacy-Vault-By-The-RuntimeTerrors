@@ -186,7 +186,6 @@ export const LandingPage: React.FC = () => {
             <motion.div
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              reducedMotion={reducedMotion}
               className="mt-6 md:mt-0 pt-2 md:pt-0 shrink-0"
             >
               <Button asChild size="lg" className="vault-button-solid self-start md:self-auto shrink-0 text-base">

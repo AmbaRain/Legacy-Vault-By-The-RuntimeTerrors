@@ -39,7 +39,9 @@ interface VaultContextType {
   }) => Promise<void>;
   pauseLegacyProtection: () => Promise<void>;
   confirmActivity: () => Promise<void>;
+  recordHeartbeat: () => Promise<void>;
   updateGasReserve: (amount: number) => Promise<void>;
+  resetVaultData: () => void;
 }
 
 const STORAGE_KEY_USER = 'lv_user_session';
@@ -598,6 +600,29 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     });
   };
 
+  const resetVaultData = () => {
+    if (!user) return;
+    const initialVault: VaultData = {
+      profile: {
+        id: user.id,
+        email: user.email,
+        wallet_address: vault?.profile?.wallet_address || generateStarknetAddress(),
+        network: 'Starknet Mainnet',
+        wallet_source: 'generated',
+        onboarding_complete: true,
+      },
+      balances: [
+        { asset: 'ETH', amount: 1.45 },
+        { asset: 'STRK', amount: 320.0 },
+        { asset: 'USDC', amount: 1250.0 },
+      ],
+      transactions: [],
+      legacy: null,
+      activity: [],
+    };
+    saveVault(initialVault);
+  };
+
   return (
     <VaultContext.Provider
       value={{
@@ -619,7 +644,9 @@ export const VaultProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setupLegacyProtection,
         pauseLegacyProtection,
         confirmActivity,
+        recordHeartbeat: confirmActivity,
         updateGasReserve,
+        resetVaultData,
       }}
     >
       {children}

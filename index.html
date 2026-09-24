@@ -13,6 +13,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      window.global = window;
+      if (typeof window.process === 'undefined') {
+        window.process = { env: {} };
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

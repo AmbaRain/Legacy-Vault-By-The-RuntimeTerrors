@@ -4,6 +4,7 @@ export interface SectionHeadingProps {
   className?: string;
   as?: 'h2' | 'h3' | 'h4';
   variant?: 'default' | 'subtle' | 'destructive';
+  children?: React.ReactNode;
 }
 
 export const SectionHeading: React.FC<SectionHeadingProps> = ({
