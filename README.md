@@ -1,229 +1,265 @@
-# Legacy Vault — Technical Specification & Starknet Integration Guide
+# Legacy Vault
 
 > **Your Crypto. Your Legacy.**  
-> A non-custodial Starknet platform for programmable cryptocurrency inheritance, daily asset management, and dead-man's-switch heartbeat protection.
+> A non-custodial Starknet smart wallet platform for programmable cryptocurrency inheritance, automated heartbeat protection (dead-man's switch), Starknet–Stellar cross-chain bridging, and multi-currency fiat on/off-ramps (Busha NGN & Pollar SEP-24 Bolivian anchor).
 
 ---
 
-## Table of Contents
+## 🌟 Key Features
 
-1. [Architecture Overview](#1-architecture-overview)
-2. [Expected Backend API Endpoints](#2-expected-backend-api-endpoints)
-3. [Expected Smart Contract Specification (Cairo)](#3-expected-smart-contract-specification-cairo)
-4. [Expectant Frontend → Contract Call List](#4-expectant-frontend--contract-call-list)
-5. [Starknet Strategic Advisory & Exploitation Plan](#5-starknet-strategic-advisory--exploitation-plan)
-6. [Frontend SDK Adapter](#6-frontend-sdk-adapter)
+- **Programmable Inheritance & Dead-Man's Switch**:
+  - Non-custodial inheritance vaults deployed natively on Starknet Layer 2.
+  - Configurable inactivity timers (30, 90, 180, 365 days) with automated and manual heartbeat aliveness checks.
+  - Gas reserve allocation allowing heirs to claim assets gaslessly via native Paymasters.
+  - Protection pause/resume modes for travel, military deployment, or medical hiatus.
+- **Starknet ↔ Stellar Cross-Chain Bridging**:
+  - High-speed liquidity bridge bridging assets between Starknet L2 and Stellar network.
+  - Near-instant finality with automated cross-network transaction indexing.
+- **Multi-Rail Fiat On/Off-Ramps**:
+  - **Busha NGN Off-Ramp**: Direct off-ramping to Nigerian bank accounts (NGN) via instant settlement rails.
+  - **Pollar SEP-24 Bolivian Anchor**: Interactive deposit and withdrawal gateway for Bolivian fiat currency using Stellar's SEP-24 standard.
+  - **Paystack Payment Gateway**: Direct card and bank transfer on-ramp for African fiat currencies.
+- **Full Asset Management Suite**:
+  - Portfolio tracking across ETH, STRK, and USDC.
+  - Send, Receive, Deposit, and Withdraw flows with real-time fee calculation.
+  - Comprehensive on-chain transaction history with explorer integration.
+- **Production-Ready & Resilient**:
+  - React 19 + TypeScript + Tailwind CSS v4 + Motion animations.
+  - Zero-flicker client error boundaries to prevent unexpected blank screens.
+  - Hybrid full-stack architecture: Express dev/production server + Vercel serverless API bridge.
 
 ---
 
-## 1. Architecture Overview
+## 🏗 Architecture Overview
 
-Legacy Vault operates as a hybrid decentralized application:
-- **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS + `starknet` SDK.
-- **Smart Contract Layer**: Deployed on Starknet (Cairo 2.x), executing non-custodial asset custody, heartbeat timers, and beneficiary claims.
-- **Off-Chain Indexer / Backend**: Tracks on-chain heartbeats, manages notification emails, provides price oracles, and monitors dormancy states off-chain.
+Legacy Vault connects client-side account abstraction on Starknet with off-chain indexers, payment gateways, and Stellar settlement rails:
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      Legacy Vault Frontend                   │
-│          (React 19 + Starknet.js + Lucide Icons)             │
-└──────────────┬───────────────────────────────┬──────────────┘
-               │ JSON-RPC calls                │ REST / WebSocket
-               ▼                               ▼
-┌──────────────────────────────┐ ┌─────────────────────────────┐
-│    Starknet L2 RPC Node      │ │     Legacy Vault Backend    │
-│   (Sepolia / Mainnet RPC)    │ │   (Auth, Telemetry, Alerts) │
-└──────────────┬───────────────┘ └─────────────┬───────────────┘
-               ▼                               ▼
-┌──────────────────────────────┐ ┌─────────────────────────────┐
-│   Legacy Vault Cairo Contract│ │  PostgreSQL / Redis Indexer │
-│ (Custodian, Timer, Multicall)│ └─────────────────────────────┘
-└──────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          Legacy Vault Client                            │
+│           (React 19 + TypeScript + Tailwind CSS + Lucide + Motion)       │
+└──────────────┬──────────────────────────┬───────────────────────────────┘
+               │                          │
+               ▼ JSON-RPC                 ▼ REST / Serverless
+┌──────────────────────────────┐  ┌───────────────────────────────────────┐
+│     Starknet L2 Network      │  │        Legacy Vault Backend / API     │
+│   (Sepolia Testnet / RPC)    │  │     (Express / Vercel Serverless)     │
+│                              │  │                                       │
+│  ┌────────────────────────┐  │  ├───────────────────┬───────────────────┤
+│  │   Legacy Vault Cairo   │  │  │  Transaction     │  Remittance Cache │
+│  │ (Custodian & Heartbeat)│  │  │  Event Indexer    │  & Auth Store     │
+│  └────────────────────────┘  │  └─────────┬─────────┴─────────┬─────────┘
+└──────────────┬───────────────┘            │                   │
+               │                            ▼                   ▼
+               │                  ┌──────────────────┐ ┌──────────────────┐
+               │ Bridge Engine    │   Busha / Paystack│ │  Pollar SEP-24   │
+               └─────────────────►│   (NGN Off-Ramp) │ │ (Bolivian Anchor)│
+                                  └──────────────────┘ └──────────────────┘
 ```
 
 ---
 
-## 2. Expected Backend API Endpoints
+## 🚀 Quick Start & Local Development
 
-The backend supports off-chain operations, user authentication, notification alerts before dormancy triggers, and transaction indexing.
+### Prerequisites
 
-### 2.1 Authentication & Profile
-| Method | Endpoint | Description | Request Payload | Response Payload |
-|---|---|---|---|---|
-| `POST` | `/api/auth/register` | Register user email & encrypt backup metadata | `{ "email": string, "password_hash": string }` | `{ "user_id": string, "token": string }` |
-| `POST` | `/api/auth/login` | Authenticate existing user | `{ "email": string, "password_hash": string }` | `{ "user_id": string, "token": string, "profile": object }` |
-| `GET` | `/api/user/profile` | Get connected vault metadata | Header: `Bearer <token>` | `{ "user_id": string, "email": string, "wallet_address": string, "created_at": string }` |
-| `POST` | `/api/user/wallet` | Associate deployed Starknet vault address | `{ "wallet_address": string, "network": "sepolia" \| "mainnet" }` | `{ "success": boolean }` |
+- **Node.js**: v20+ (v22 recommended) or **Bun**
+- **npm** or **bun**
+- (Optional for smart contract development): **Scarb** & **Starknet Foundry (`snforge`)**
 
-### 2.2 Heartbeat & Monitoring Service
-| Method | Endpoint | Description | Request Payload | Response Payload |
-|---|---|---|---|---|
-| `GET` | `/api/vault/:address/status` | Read cached vault dormancy state & countdown | None | `{ "address": string, "status": "active" \| "warning" \| "eligible" \| "executed" \| "paused", "last_heartbeat": number, "dormancy_seconds": number, "seconds_remaining": number }` |
-| `POST` | `/api/vault/:address/notify-settings` | Configure email/telegram warning threshold | `{ "warning_days_before": number, "alert_email": string }` | `{ "success": boolean }` |
-| `POST` | `/api/indexer/heartbeat-sync` | Webhook triggered when an on-chain heartbeat occurs | `{ "tx_hash": string, "vault_address": string, "timestamp": number }` | `{ "recorded": boolean }` |
+### 1. Installation
 
-### 2.3 Transaction Indexer & Oracle
-| Method | Endpoint | Description | Request Payload | Response Payload |
-|---|---|---|---|---|
-| `GET` | `/api/vault/:address/transactions` | Query indexed Starknet transactions | Query: `?page=1&limit=20&asset=ETH` | `{ "total": number, "items": Transaction[] }` |
-| `GET` | `/api/oracle/prices` | Reference spot prices for ETH, STRK, USDC | None | `{ "ETH": 3100.50, "STRK": 0.45, "USDC": 1.00 }` |
-| `POST` | `/api/bridge/quote` | Estimate L1 ↔ L2 bridge fees and arrival time | `{ "asset": string, "amount": string, "direction": "l1_to_l2" \| "l2_to_l1" }` | `{ "estimated_fee": string, "estimated_minutes": number }` |
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/your-username/legacy-vault.git
+cd legacy-vault
+npm install
+```
+
+### 2. Environment Configuration
+
+Copy the example environment file and fill in your keys:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description | Default / Example |
+|---|---|---|
+| `GEMINI_API_KEY` | Optional AI capabilities key | Injected by AI Studio |
+| `APP_URL` | Base application URL | `http://localhost:3000` |
+| `VITE_PAYSTACK_PUBLIC_KEY` | Paystack public key for card on-ramp | `pk_test_...` |
+| `PAYSTACK_SECRET_KEY` | Paystack secret key for webhook verification | `sk_test_...` |
+| `BUSHA_SECRET_KEY` | Busha crypto off-ramp secret | `YOUR_SECRET_TOKEN` |
+| `VITE_BUSHA_API_KEY` | Busha public test API key | `test_bsh_sec_...` |
+| `STELLAR_HORIZON_URL` | Stellar network horizon endpoint | `https://horizon-testnet.stellar.org` |
+| `STELLAR_NETWORK` | Stellar network passphrase | `Test SDF Network ; September 2015` |
+| `STELLAR_TREASURY_SECRET` | Stellar bridge relayer secret key | *Optional for local dev* |
+| `STELLAR_USDC_ISSUER` | Stellar testnet USDC issuer address | `GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5` |
+| `STARKNET_RPC_URL` | Starknet Sepolia JSON-RPC provider | `https://starknet-sepolia.public.blastapi.io/rpc/v0_7` |
+| `STARKNET_VAULT_CONTRACT_ADDRESS` | Deployed Cairo contract address | `0x07b7194ffba17045b78b5ce534346e01a88dbce04c632876615b138ff40c4a45` |
+
+### 3. Run Development Server
+
+```bash
+npm run dev
+```
+
+The application will start on **`http://localhost:3000`**, serving both the Vite client frontend and Express API routes under `/api/*`.
+
+### 4. Build for Production
+
+```bash
+npm run build
+```
+
+This compiles:
+1. Static client assets via Vite into `dist/` (with vendor chunking for `starknet` and UI libraries).
+2. Standalone Node.js server bundle via esbuild into `dist/server.cjs`.
+
+To preview the built production server locally:
+```bash
+npm run start
+```
+
+### 5. Typecheck & Linting
+
+```bash
+npm run lint
+```
 
 ---
 
-## 3. Expected Smart Contract Specification (Cairo)
+## ☁️ Deployment Guide (Vercel)
 
-The smart contract can be written either as a standalone **Inheritance Module (Validator/Hook)** or as a **Full Custom Account Abstraction Vault**. Below is the interface for the Cairo contract:
+This repository is optimized for one-click deployment on **Vercel** with full support for both client-side Single Page Application (SPA) routing and serverless `/api/*` endpoints.
 
-### 3.1 Storage Variables
+### Deployment Configuration (`vercel.json`)
+
+The project includes an explicit `vercel.json` configuration:
+
+```json
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.ts"
+    },
+    {
+      "source": "/((?!assets/|media/|favicon.ico|api/|.*\\.[a-zA-Z0-9]+$).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
+```
+
+### Key Vercel Setup Steps:
+
+1. **Framework Preset**: Vercel automatically detects `Vite`. Ensure the output directory is set to `dist`.
+2. **Build Command**: `npm run build`
+3. **Environment Variables**: Add your environment variables in the Vercel Project Settings (refer to `.env.example`).
+4. **Serverless Functions**: The `/api/index.ts` file acts as the serverless bridge connecting all Express API routes automatically on Vercel without requiring a long-running Node server.
+5. **Static Assets & SPA Rewrites**: The rewrite rule ensures static `.js`, `.css`, and images in `/assets` load without being redirected to `index.html`.
+
+---
+
+## 🧭 Application Routes & Pages
+
+| Route | Page Component | Description |
+|---|---|---|
+| `/` | `LandingPage.tsx` | High-converting landing page highlighting Starknet security, AA, and inheritance features. |
+| `/welcome` | `WelcomePage.tsx` | Welcome gateway for new and returning users. |
+| `/onboarding/*` | `onboarding/*.tsx` | 4-step onboarding wizard: create vault, secure seed phrase, verify, and initialize. |
+| `/auth` | `AuthPage.tsx` | Email/password sign-in and biometric/passkey connection portal. |
+| `/dashboard` | `DashboardPage.tsx` | Central vault command center with balance overview, dormancy countdown, and fast ping. |
+| `/assets` | `AssetsPage.tsx` | Multi-asset portfolio view (ETH, STRK, USDC) with allocation analytics. |
+| `/send` | `SendPage.tsx` | Send assets to any Starknet address or contract. |
+| `/receive` | `ReceivePage.tsx` | Receive crypto with QR code and shareable Starknet address. |
+| `/deposit` | `DepositPage.tsx` | On-ramp and deposit assets using cards, Paystack, or crypto transfers. |
+| `/withdraw` | `WithdrawPage.tsx` | Off-ramp crypto to fiat bank accounts via Busha (NGN) or Pollar (BOB). |
+| `/bridge` | `BridgePage.tsx` | Cross-chain bridge interface for Starknet ↔ Stellar network swaps. |
+| `/activity` | `ActivityPage.tsx` | Real-time transaction history, heartbeat log, and pending executions. |
+| `/tx/:id` | `TransactionDetailPage.tsx` | Deep-dive transaction view with fee breakdown and explorer links. |
+| `/legacy-protection` | `LegacyProtectionPage.tsx` | Heartbeat management, emergency pause toggle, and dormancy status monitor. |
+| `/legacy-setup` | `LegacySetupPage.tsx` | Multi-step inheritance setup: designate beneficiary, set window, fund gas reserve. |
+| `/claim` | `BeneficiaryClaimPortal.tsx` | Heir claims portal to inspect eligibility and execute claim with sponsored gas. |
+| `/how-it-works` | `HowItWorksPage.tsx` | Step-by-step explainer of Starknet Cairo vaults and dead-man's switch logic. |
+| `/security` | `SecurityPage.tsx` | Detailed technical audit and security posture overview. |
+| `/settings` | `SettingsPage.tsx` | User preferences, notification webhook settings, and wallet management. |
+
+---
+
+## 📜 Smart Contract Specification (Cairo)
+
+The smart contracts are located in `contracts/` and written in Cairo for Starknet:
+
+### Storage Layout (`LegacyVault.cairo`)
+
 ```cairo
 #[storage]
 struct Storage {
     // Owner of the vault
     owner: ContractAddress,
-    // Beneficiary who receives the inheritance
+    // Designated beneficiary (next-of-kin)
     beneficiary: ContractAddress,
-    // Duration in seconds of allowed inactivity before claims open (e.g., 30 days = 2,592,000s)
+    // Duration in seconds of allowed inactivity (e.g., 90 days = 7,776,000s)
     dormancy_period: u64,
-    // Timestamp of the most recent qualifying transaction or heartbeat
+    // Timestamp of the latest qualifying on-chain heartbeat
     last_heartbeat: u64,
     // Gas reserve balance allocated for autonomous beneficiary claim execution
     gas_reserve: u256,
-    // Token used for gas reserve (e.g., STRK or ETH)
+    // Token address used for gas reserve (STRK or ETH)
     gas_reserve_token: ContractAddress,
-    // Flag to temporarily halt countdown (e.g., during military leave or medical hiatus)
+    // Flag to temporarily halt the countdown (e.g., during medical/travel hiatus)
     is_paused: bool,
-    // Flag set to true once inheritance has been completely executed
+    // Flag indicating whether inheritance has been transferred
     is_claimed: bool,
 }
 ```
 
-### 3.2 View Functions (Read-Only)
-| Function Signature | Return Type | Purpose |
-|---|---|---|
-| `get_inheritance_config(vault_owner: ContractAddress)` | `InheritanceConfig` struct | Returns beneficiary address, dormancy period, gas reserve, and status. |
-| `get_last_heartbeat(vault_owner: ContractAddress)` | `u64` | Returns UNIX timestamp of the latest qualifying on-chain activity. |
-| `is_claim_eligible(vault_owner: ContractAddress)` | `bool` | Evaluates if `block_timestamp > last_heartbeat + dormancy_period` and not paused/claimed. |
-| `get_time_until_dormant(vault_owner: ContractAddress)` | `u64` | Returns seconds left until inheritance claim opens. |
-| `get_gas_reserve(vault_owner: ContractAddress)` | `(u256, ContractAddress)` | Returns current gas reserve balance and token address. |
+### View & Mutative Methods
 
-### 3.3 External Functions (State Mutations)
-| Function Signature | Caller Requirement | Purpose |
-|---|---|---|
-| `configure_inheritance(beneficiary, dormancy_days, gas_reserve_amount, gas_reserve_token)` | Vault Owner | Registers or updates the next-of-kin beneficiary, dormancy window, and funds the gas reserve. |
-| `send_heartbeat()` | Vault Owner | Explicitly updates `last_heartbeat = get_block_timestamp()` to prove aliveness. |
-| `pause_inheritance()` | Vault Owner | Temporarily suspends dormancy countdown. |
-| `resume_inheritance()` | Vault Owner | Resumes dormancy countdown, resetting `last_heartbeat` to current timestamp. |
-| `claim_inheritance(vault_owner: ContractAddress)` | Beneficiary (or Keeper) | Transports vault assets to beneficiary once `is_claim_eligible == true`. |
-| `withdraw_gas_reserve(recipient: ContractAddress)` | Vault Owner | Allows the owner to refund unused gas reserve tokens back to their personal wallet. |
+- `configure_inheritance(beneficiary, dormancy_days, gas_reserve_amount, gas_reserve_token)`: Configures beneficiary and deposits gas reserve.
+- `send_heartbeat()`: Updates `last_heartbeat` to current block timestamp; proves the owner is alive.
+- `pause_inheritance()` / `resume_inheritance()`: Temporarily freezes or unfreezes the dormancy clock.
+- `claim_inheritance(vault_owner)`: Allows beneficiary (or automated keeper) to claim assets once dormancy duration has elapsed without a heartbeat.
+- `is_claim_eligible(vault_owner)`: Pure view returning `true` if `block_timestamp > last_heartbeat + dormancy_period`.
 
-### 3.4 Events Emitted
-```cairo
-#[event]
-#[derive(Drop, starknet::Event)]
-enum Event {
-    InheritanceConfigured: InheritanceConfigured,
-    HeartbeatReceived: HeartbeatReceived,
-    InheritancePaused: InheritancePaused,
-    InheritanceResumed: InheritanceResumed,
-    InheritanceClaimed: InheritanceClaimed,
-    GasReserveRefunded: GasReserveRefunded,
-}
+### Running Cairo Tests
+
+To test the Cairo contracts using Starknet Foundry:
+
+```bash
+cd contracts
+./test.sh
+# or directly:
+snforge test
 ```
 
 ---
 
-## 4. Expectant Frontend → Contract Call List
+## ⚡ Starknet Advantages & Account Abstraction
 
-The frontend expects to dispatch the following transactions and views. All calls are codified in `src/lib/starknet.ts`.
-
-### 4.1 Read Calls (Polling & View Renders)
-1. **`get_inheritance_config(vaultOwner)`**
-   - **Trigger**: Mounted when entering `/legacy-protection`, `/dashboard`, or `/settings`.
-   - **Expectation**: Populates beneficiary address, configured dormancy days, and pause status.
-2. **`is_claim_eligible(vaultOwner)`**
-   - **Trigger**: Periodic health check or when a designated beneficiary enters claim mode.
-   - **Expectation**: Dictates whether the "Claim Inheritance" UI is enabled or locked.
-3. **`get_last_heartbeat(vaultOwner)`**
-   - **Trigger**: Drives the live countdown timer and warning badge on the Activity page.
-
-### 4.2 Write Calls (User Interactions)
-1. **`configure_inheritance(...)`**
-   - **Frontend Source**: `LegacySetupPage.tsx` (Step 4 Submit).
-   - **Calldata**: `[beneficiary_address, dormancy_days, gas_reserve_low, gas_reserve_high, token_address]`.
-   - **Multicall Note**: Preceded by an `erc20.approve` call if depositing gas reserve in the same transaction.
-2. **`send_heartbeat()`**
-   - **Frontend Source**: `ActivityPage.tsx` ("Send Heartbeat Ping" button).
-   - **Calldata**: `[]`.
-   - **Expectation**: Low fee (~$0.005), resets timer to 100%.
-3. **`pause_inheritance()` / `resume_inheritance()`**
-   - **Frontend Source**: `LegacyProtectionPage.tsx` ("Pause Protection" toggle).
-   - **Calldata**: `[]`.
-4. **`claim_inheritance(vaultOwner)`**
-   - **Frontend Source**: Beneficiary Claim Portal.
-   - **Calldata**: `[vault_owner_address]`.
-   - **Execution**: Can be sponsored via Paymaster so the beneficiary pays zero initial gas.
+Legacy Vault exploits several unique architectural advantages of Starknet:
+1. **Native Account Abstraction (AA)**: Every account is a smart contract. No complex EOA escrow wrappers required.
+2. **Native Multicalls**: Batch token approval, gas deposit, and inheritance configuration in a single atomic transaction.
+3. **Paymasters & Gasless Claims**: Beneficiaries with zero crypto experience or zero balance can claim their inheritance sponsored by the vault's pre-funded gas reserve.
+4. **Low Execution Cost**: Heartbeat pings cost fractions of a cent ($0.001–$0.005), enabling frequent check-ins without friction.
 
 ---
 
-## 5. Starknet Strategic Advisory & Exploitation Plan
+## 🛡 Security & Production Resilience
 
-Starknet is uniquely suited for a programmable inheritance protocol due to architectural advantages not found on standard EVM chains:
-
-### 1. Native Account Abstraction (AA)
-- **Traditional EVM Problem**: On Ethereum L1, wallets are EOAs (Externally Owned Accounts). EOAs cannot execute logic without a signature from a private key. If the owner passes away or loses keys, no code can ever touch the assets.
-- **Starknet Advantage**: *Every account on Starknet is natively a smart contract*. There are no EOAs.
-- **How to Exploit in Legacy Vault**:
-  - The Legacy Vault itself is an Account Contract (`__validate__` and `__execute__`).
-  - In `__validate__`, you can enforce custom rules: *"Valid if signed by Owner OR (signed by Beneficiary AND block_timestamp > last_heartbeat + dormancy)"*.
-  - This completely removes the need for awkward wrapped escrow vaults. The user holds their funds directly in their primary account.
-
-### 2. Native Multicall (Atomic Batching)
-- **Traditional EVM Problem**: To configure inheritance with token deposits, users sign 2–3 separate transactions (Approve token, Deposit, Configure timer).
-- **Starknet Advantage**: Native batch execution allows sending an array of `Call[]` in a single signature.
-- **How to Exploit in Legacy Vault**:
-  - In `LegacySetupPage`, combine `approve(gas_reserve)`, `transfer(gas_reserve)`, and `configure_inheritance` into **one atomic multicall**. The user confirms only once in their wallet.
-  - When the inheritance executes, the contract can distribute ETH, STRK, and USDC to the heir in a single block without multiple withdrawal steps.
-
-### 3. Paymasters & Fee Abstraction (Gasless Claims)
-- **Traditional Problem**: If an heir has never used crypto, they won't have ETH or STRK to pay gas fees to submit a `claim_inheritance()` transaction.
-- **Starknet Advantage**: Native Paymaster architecture allows third parties (or the vault's gas reserve) to sponsor transaction fees, or allows paying gas in USDC.
-- **How to Exploit in Legacy Vault**:
-  - Use the pre-funded **Gas Reserve** to sponsor the beneficiary's claim transaction via an AVNU or Cartridge Paymaster. The heir can claim their inheritance with a completely empty wallet balance.
-
-### 4. Session Keys & Autonomous Keepers
-- **Traditional Problem**: Dead-man's-switches usually require someone to manually click "Claim" after death.
-- **Starknet Advantage**: Starknet supports constrained Session Keys (temporary cryptographic credentials with strict execution parameters).
-- **How to Exploit in Legacy Vault**:
-  - Allow an autonomous off-chain Keeper (or Cartridge Controller) to hold a session key restricted solely to calling `execute_dormancy_transfer()` once the time condition is verified by the STARK prover.
-
-### 5. Validity Proofs & Cheap Storage
-- **Starknet Advantage**: Computation and storage verification scale logarithmically with STARK proofs.
-- **How to Exploit in Legacy Vault**:
-  - Daily heartbeat pings cost fractions of a cent ($0.001–$0.005), making frequent aliveness signals practically free compared to Ethereum L1 ($5–$25 per ping).
+- **Client Error Boundaries**: Protects against unexpected unhandled rendering exceptions, ensuring the user interface always presents recovery options.
+- **Rollup Chunk Optimization**: Heavy cryptographic SDKs (`starknet`) and animation engines are split into dedicated cache chunks for rapid initial load.
+- **Non-Custodial Architecture**: Private keys and seed phrases remain strictly client-side or within Starknet account contracts.
 
 ---
 
-## 6. Frontend SDK Adapter
+## 📄 License
 
-The official `starknet` SDK is already installed in the application.
-
-A dedicated bridge adapter is provided in `src/lib/starknet.ts`:
-```typescript
-import { ContractCallBuilder, getInheritanceContract } from '@/lib/starknet';
-
-// 1. Build a multicall to configure inheritance
-const call = ContractCallBuilder.configureInheritance(
-  VAULT_CONTRACT_ADDRESS,
-  beneficiaryAddress,
-  90, // 90 days dormancy
-  gasReserveAmount,
-  STRK_TOKEN_ADDRESS
-);
-
-// 2. Dispatch via connected Starknet account
-const tx = await account.execute([call]);
-await provider.waitForTransaction(tx.transaction_hash);
-```
-
-When you deploy your Cairo contract, update `VAULT_CONTRACT_ADDRESS` with your deployed address on Sepolia or Mainnet to transition seamlessly from simulated mock states to live on-chain execution.
+MIT License. Designed and engineered for the decentralized future.
